@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import './index.css';
 
 function Dashboard() {
   const { user, logout } = useAuth();
@@ -18,53 +19,79 @@ function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-64 bg-white h-screen p-4">
-          <div className="flex items-center mb-8">
-            <img
-              src={user?.photoURL}
-              alt="Profile"
-              className="w-8 h-8 rounded-full mr-2"
-            />
-            <span className="font-medium">{user?.displayName}</span>
-          </div>
-          <nav>
-            <ul className="space-y-2">
-              <li className="hover:bg-gray-100 p-2 rounded">Dashboard</li>
-              <li className="hover:bg-gray-100 p-2 rounded">Projects</li>
-              <li className="hover:bg-gray-100 p-2 rounded">Teams</li>
-              <li className="hover:bg-gray-100 p-2 rounded">Settings</li>
-            </ul>
-          </nav>
+    <div className="container">
+      {/* Sidebar */}
+      <div className="sidebar">
+        <div className="user-greeting">
+          <img
+            src={user?.photoURL}
+            alt="Profile"
+            className="w-10 h-10 rounded-full"
+          />
+          <span>{`Hello, ${user?.displayName}`}</span>
+        </div>
+        <nav className="menu">
+          <ul>
+            <li onClick={() => navigate('/dashboard')}>Dashboard</li>
+            <li onClick={() => navigate('/projects')}>Projects</li>
+            <li onClick={() => navigate('/teams')}>Teams</li>
+            <li onClick={() => navigate('/settings')}>Settings</li>
+          </ul>
+        </nav>
+      </div>
+
+      {/* Main content */}
+      <div className="main-content">
+        {/* Title */}
+        <div className="header">
+          <h1>CodeRev</h1>
         </div>
 
-        {/* Main content */}
-        <div className="flex-1 p-8">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Projects</h1>
-            <button
-              onClick={createNewProject}
-              className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700"
-            >
-              +
-            </button>
+        {/* Projects section */}
+        <div className="projects-container">
+        <div className="projects-header">
+          <h2>Projects</h2>
+          <button className="add-button">+</button>
+        </div>
+        
+        <div className="divider"></div>
+        
+        {projects.length === 0 ? (
+          <div className="empty-state">
+            <p>Projects haven't been assigned</p>
           </div>
-          
-          <div className="grid grid-cols-3 gap-4">
-            {projects.map(project => (
-              <div
-                key={project.id}
-                className="bg-white p-4 rounded-lg shadow cursor-pointer"
-                onClick={() => navigate(`/project/${project.id}`)}
-              >
-                <h3 className="font-medium">{project.name}</h3>
-                <p className="text-sm text-gray-500">
-                  {new Date(project.created).toLocaleDateString()}
-                </p>
+        ) : (
+          <div className="projects-grid">
+            {projects.map((project) => (
+              <div key={project.id} className="project-item" onClick={() => navigate(`/project/${project.id}`)}>
+                <h3>{project.name}</h3>
+                <p>{new Date(project.created).toLocaleDateString()}</p>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+        {/* Teams section */}
+        <div className="teams-section">
+          <h2>Teams</h2>
+          <div className="team-list">
+            <div className="team-item">
+              <img src="https://via.placeholder.com/50" alt="User 1" />
+              <span>User 1</span>
+            </div>
+            <div className="team-item">
+              <img src="https://via.placeholder.com/50" alt="User 2" />
+              <span>User 2</span>
+            </div>
+            <div className="team-item">
+              <img src="https://via.placeholder.com/50" alt="User 3" />
+              <span>User 3</span>
+            </div>
+            <div className="team-item">
+              <img src="https://via.placeholder.com/50" alt="User 4" />
+              <span>User 4</span>
+            </div>
           </div>
         </div>
       </div>

@@ -11,7 +11,8 @@ function Welcome() {
       <h1>Real-Time Code Review</h1>
       <p>Collaborate with your team in real-time, review code together, and get instant AI-powered suggestions.</p>
       
-      <button onClick={() => navigate('/signin')}>Get Started</button>
+      <button className="start-button"
+      onClick={() => navigate('/signin')}>Get Started</button>
 
       <div className="mock-browser">
         <div className="browser-header">
@@ -28,6 +29,10 @@ function Welcome() {
           <p>{`}`}</p>
         </div>
       </div>
+       {/* Footer */}
+       <div className="footer">
+          <p>&copy; 2024 CodeRev. All rights reserved.</p>
+        </div>
     </div>
   );
 }
