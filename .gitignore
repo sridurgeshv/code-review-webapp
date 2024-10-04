@@ -1,0 +1,2 @@
+# node_modules file to be not tracked in git
+node_modules
