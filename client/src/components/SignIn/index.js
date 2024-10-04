@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import './index.css';
 
 function SignIn() {
   const { signInWithGoogle } = useAuth();
@@ -16,17 +17,13 @@ function SignIn() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
-        <button
-          onClick={handleSignIn}
-          className="flex items-center justify-center w-full bg-white border border-gray-300 rounded-lg px-6 py-3 hover:bg-gray-50"
-        >
+    <div className="min-h-screen">
+      <div className="bg-white">
+        <h2>CodeRev</h2>
+        <button onClick={handleSignIn}>
           <img
             src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg"
             alt="Google"
-            className="w-6 h-6 mr-2"
           />
           Sign in with Google
         </button>
