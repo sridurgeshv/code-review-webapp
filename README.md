@@ -47,3 +47,12 @@ real-time-code-review/
     │   └── app.js
     ├── package.json
     └── .env
+
+
+
+### google auth :
+```bash
+cd client
+npm install @react-oauth/google firebase
+```
+
