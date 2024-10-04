@@ -19,3 +19,31 @@ npm start
 ```
 
 Careful
+
+real-time-code-review/
+├── client/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Editor/
+│   │   │   ├── Auth/
+│   │   │   └── Dashboard/
+│   │   ├── contexts/
+│   │   │   └── AuthContext.js
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   └── socket.js
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── package.json
+│   └── .env
+└── server/
+    ├── src/
+    │   ├── controllers/
+    │   ├── models/
+    │   ├── routes/
+    │   ├── services/
+    │   └── app.js
+    ├── package.json
+    └── .env
