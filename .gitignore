@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 # node_modules file to be not tracked in git
 node_modules
-=======
 # Logs
 logs
 *.log
@@ -132,4 +130,3 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
->>>>>>> 97c6150441895c4663631c93125370ff3da3b94f
