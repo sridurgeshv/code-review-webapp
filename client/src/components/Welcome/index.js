@@ -25,7 +25,7 @@ function Welcome() {
         <div className="mock-editor">
           <p>// Welcome to the Editor</p>
           <p>function helloWorld() {`{`}</p>
-          <p>&nbsp;&nbsp;console.log("Hello, World!");</p>
+          <p>&nbsp;&nbsp;console.log("Hello, Coders!");</p>
           <p>{`}`}</p>
         </div>
       </div>
