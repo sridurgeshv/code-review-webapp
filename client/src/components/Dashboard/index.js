@@ -38,7 +38,7 @@ function Dashboard() {
               alt="Profile"
               className="w-10 h-10 rounded-full"
             />
-            <span>{`Hello, ${user?.displayName}`}</span>
+            <span>{`Hi, ${user?.displayName}`}</span>
           </div>
           <nav className="menu">
             <ul>
