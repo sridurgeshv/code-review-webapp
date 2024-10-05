@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Pencil } from 'lucide-react';
 import Editor from '../Editor';
 import './index.css';
 
 function Project() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [title, setTitle] = useState('New Project');
+  const [isEditing, setIsEditing] = useState(false);
+
+  const handleTitleSubmit = (e) => {
+    if (e.key === 'Enter') {
+      setIsEditing(false);
+    }
+  };
 
   return (
     <div className="Projects-container">
@@ -34,7 +43,7 @@ function Project() {
 
         <div className="connected-section">
           <h3 className="connected-title">Connected</h3>
-          <div className="user-avatar">N</div>
+          <div className="user-avatar">S</div>
         </div>
 
         <div className="Action-buttons">
@@ -44,6 +53,25 @@ function Project() {
       </div>
       
       <div className="flex-1">
+        <div className="project-title-container">
+          {isEditing ? (
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              onKeyDown={handleTitleSubmit}
+              className="title-input"
+              autoFocus
+            />
+          ) : (
+            <div className="title-display">
+              <h1>{title}</h1>
+              <button onClick={() => setIsEditing(true)} className="edit-button">
+                <Pencil size={15} />
+              </button>
+            </div>
+          )}
+        </div>
         <Editor />
       </div>
     </div>

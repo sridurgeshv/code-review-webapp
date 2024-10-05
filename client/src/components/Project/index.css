@@ -64,11 +64,11 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background-color: #553fb8;
+    background-color: #20abb5;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: 24px;
     color: white;
   }
   
@@ -105,4 +105,54 @@
   
   .action-button2:hover {
     background-color: #f13535;
+  }
+
+  .project-title-container {
+    padding: 10px;
+    margin-top: 10px;
+  }
+  
+  .title-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .title-display h1 {
+    font-size: 24px;
+    color: #fff;
+    margin: 0;
+  }
+  
+  .edit-button {
+    background: none;
+    border: none;
+    color: #a9adc1;
+    cursor: pointer;
+    padding: 6px;
+    width: 75px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .edit-button:hover {
+    background: #545662;
+    color: #1e1c23;
+  }
+  
+  .title-input {
+    background: #2a2833;
+    border: 1px solid #444;
+    color: #fff;
+    font-size: 24px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    width: 300px;
+  }
+  
+  .title-input:focus {
+    outline: none;
+    border-color: #666;
   }
