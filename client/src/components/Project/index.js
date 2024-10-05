@@ -1,27 +1,45 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Editor from '../Editor';
+import './index.css';
 
 function Project() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex">
-      <div className="w-64 bg-white border-r p-4">
-        <h2 className="text-xl font-bold mb-4">Project Name</h2>
-        <div className="mb-4">
-          <h3 className="font-medium mb-2">Files</h3>
-          <ul className="space-y-1">
-            <li className="text-sm hover:bg-gray-100 p-1 rounded">index.js</li>
-            <li className="text-sm hover:bg-gray-100 p-1 rounded">style.css</li>
+    <div className="Projects-container">
+      <div className="sidebar2">
+        <div className="project-Logo">
+          <span>{`{ }`}</span>
+          <span>CodeRev</span>
+        </div>
+        
+        <div className="file-explorer">
+          <ul className="file-list">
+            <li className="file-item">
+              <span className="file-icon">📄</span>
+              index.html
+            </li>
+            <li className="file-item">
+              <span className="file-icon">📄</span>
+              script.js
+            </li>
+            <li className="file-item">
+              <span className="file-icon">📄</span>
+              style.css
+            </li>
           </ul>
         </div>
-        <div>
-          <h3 className="font-medium mb-2">Connected Users</h3>
-          <div className="flex flex-wrap gap-2">
-            <div className="w-8 h-8 rounded-full bg-blue-500"></div>
-            <div className="w-8 h-8 rounded-full bg-green-500"></div>
-          </div>
+
+        <div className="connected-section">
+          <h3 className="connected-title">Connected</h3>
+          <div className="user-avatar">N</div>
+        </div>
+
+        <div className="Action-buttons">
+          <button className="action-button">Copy ROOM ID</button>
+          <button className="action-button2" onClick={() => navigate('/dashboard')}>Leave</button>
         </div>
       </div>
       

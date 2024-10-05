@@ -1,0 +1,108 @@
+.Projects-container {
+    display: flex;
+    height: 100vh;
+    background-color: #1e1e2e;
+    color: white;
+  }
+  
+  .sidebar2 {
+    width: 330px;
+    background-color: #13111b;
+    padding: 20px;
+    border-right: 1px solid #2a2833;
+  }
+  
+  .project-Logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 45px;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .file-explorer {
+    margin-bottom: 30px;
+  }
+  
+  .file-list {
+    list-style: none;
+  }
+  
+  .file-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    cursor: pointer;
+    font-size: 18px;
+    color: #a9adc1;
+  }
+  
+  .file-item:hover {
+    color: #fff;
+  }
+  
+  .file-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .connected-section {
+    border-top: 1px solid #2a2833;
+    padding-top: 20px;
+  }
+  
+  .connected-title {
+    font-size: 20px;
+    color: white;
+    margin-bottom: 12px;
+  }
+  
+  .user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #553fb8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: white;
+  }
+  
+  .Action-buttons {
+    margin-top: 330px;
+    padding-top: 20px;
+  }
+  
+  .action-button {
+    width: 100%;
+    padding: 8px;
+    background-color: #2a2833;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  
+  .action-button:hover {
+    background-color: #28a745;
+  }
+
+  .action-button2 {
+    width: 100%;
+    padding: 8px;
+    background-color: #2a2833;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  
+  .action-button2:hover {
+    background-color: #f13535;
+  }
