@@ -25,13 +25,16 @@ function Dashboard() {
       <div className="sidebar">
         <div className="sidebar-top">
           <div className="user-greeting">
-            <img
-              src={user?.photoURL}
-              alt="Profile"
-              className="w-10 h-10 rounded-full"
-            />
-            <span>{`Hi, ${user?.displayName}`}</span>
+            <div className="greeting-top">
+              <img
+                src={user?.photoURL}
+                alt="Profile"
+              />
+              <span className="hi-text">Hi,</span>
+            </div>
+              <span className="username">{user?.displayName?.split(' ').slice(0, 2).join(' ')}</span>
           </div>
+          
           <nav className="menu">
             <ul>
               <li onClick={() => navigate('/dashboard')}>Dashboard</li>

@@ -53,16 +53,35 @@
   
   .sidebar .user-greeting {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar .user-greeting .greeting-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
   
   .sidebar .user-greeting img {
     border-radius: 50%;
-    width: 50px;
-    margin-right: 10px;
+    width: 45px;
+    height: 45px;
   }
   
-  .sidebar .user-greeting span {
+  .sidebar .user-greeting .hi-text {
     font-size: 16px;
+    white-space: nowrap;
+  }
+  
+  .sidebar .user-greeting .username {
+    font-size: 16px;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
   }
   
   .logout-container {

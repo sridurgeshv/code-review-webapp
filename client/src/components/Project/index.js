@@ -4,12 +4,32 @@ import { Pencil, Play } from 'lucide-react';
 import Editor from '../Editor';
 import './index.css';
 
+// Inline Alert Component
+const Alert = ({ children }) => {
+  return (
+    <div style={{
+      padding: '10px',
+      backgroundColor: '#d4edda',
+      color: '#155724',
+      border: '1px solid #c3e6cb',
+      borderRadius: '4px',
+      position: 'fixed',
+      bottom: '20px',
+      right: '20px',
+      zIndex: 1000
+    }}>
+      {children}
+    </div>
+  );
+};
+
 function Project() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [title, setTitle] = useState(location.state?.projectTitle || 'New Project');
   const [isEditing, setIsEditing] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
 
   const handleTitleSubmit = (e) => {
     if (e.key === 'Enter') {
@@ -17,8 +37,19 @@ function Project() {
     }
   };
 
+  const copyRoomId = async () => {
+    await navigator.clipboard.writeText(id);
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 3000);
+  };
+
   return (
     <div className="Projects-container">
+      {showNotification && (
+        <div className="fixed top-4 right-4">
+          <Alert>Room ID copied successfully!</Alert>
+        </div>
+      )}
        <div className="top-nav">
         <div className="nav-title">
           {isEditing ? (
@@ -62,7 +93,7 @@ function Project() {
         </div>
 
         <div className="Action-buttons">
-          <button className="action-button">Copy ROOM ID</button>
+          <button className="action-button" onClick={copyRoomId}>Copy ROOM ID</button>
           <button className="action-button2" onClick={() => navigate('/dashboard')}>Leave</button>
         </div>
        </div>
