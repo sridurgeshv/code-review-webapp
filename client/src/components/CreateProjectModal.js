@@ -26,12 +26,13 @@ export default function CreateProjectModal({ isOpen, onClose }) {
 
   const handleCreateProject = () => {
     const projectId = Date.now();
-    const isWebTemplate = searchTemplate === 'HTML, CSS, JS';
     onClose();
-    navigate(`/project/${projectId}`, { state: { 
-      projectTitle: title,
-      isWebTemplate
-    } });
+    navigate(`/project/${projectId}`, { 
+      state: { 
+        projectTitle: title,
+        selectedTemplate: searchTemplate
+      } 
+    });
   };
 
   const handleJoinTeam = () => {

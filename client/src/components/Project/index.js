@@ -30,6 +30,39 @@ function Project() {
   const [title, setTitle] = useState(location.state?.projectTitle || 'New Project');
   const [isEditing, setIsEditing] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const selectedTemplate = location.state?.selectedTemplate;
+
+  const getTemplateFiles = () => {
+    switch (selectedTemplate) {
+      case 'Python':
+        return [{ name: 'main.py', icon: '📄' }];
+      case 'Node.js':
+        return [{ name: 'index.js', icon: '📄' }];
+      case 'C':
+        return [{ name: 'main.c', icon: '📄' }];
+      case 'C++':
+        return [{ name: 'main.cpp', icon: '📄' }];
+      case 'Java':
+        return [{ name: 'main.java', icon: '📄' }];
+      case 'HTML, CSS, JS':
+        return [
+          { name: 'index.html', icon: '📄' },
+          { name: 'style.css', icon: '📄' },
+          { name: 'script.js', icon: '📄' }
+        ];
+      case 'React':
+        return [
+          { name: 'src', icon: '📁', children: [
+            { name: 'App.css', icon: '📄' },
+            { name: 'App.js', icon: '📄' },
+            { name: 'index.jsx', icon: '📄' }
+          ]},
+          { name: 'index.html', icon: '📄' }
+        ];
+      default:
+        return [{ name: 'main.txt', icon: '📄' }];
+    }
+  };
 
   const handleTitleSubmit = (e) => {
     if (e.key === 'Enter') {
@@ -78,14 +111,26 @@ function Project() {
 
       <div className="main-content2">
         <div className="sidebar2">
-          <div className="file-explorer">
-            <ul className="file-list">
-              <li className="file-item">
-                <span className="file-icon">📄</span>
-                main.py
-              </li>
-            </ul>
-          </div>
+        <div className="file-explorer">
+        <ul className="file-list">
+          {getTemplateFiles().map((file, index) => (
+            <li key={index} className="file-item">
+              <span className="file-icon">{file.icon}</span>
+              {file.name}
+              {file.children && (
+                <ul className="nested-files">
+                  {file.children.map((child, childIndex) => (
+                    <li key={childIndex} className="file-item">
+                      <span className="file-icon">{child.icon}</span>
+                      {child.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
 
         <div className="connected-section">
           <h3 className="connected-title">Connected</h3>
