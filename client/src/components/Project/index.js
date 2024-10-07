@@ -58,7 +58,7 @@ function Project() {
 
         <div className="connected-section">
           <h3 className="connected-title">Connected</h3>
-          <div className="user-avatar">S</div>
+          <div className="user-avatar">M</div>
         </div>
 
         <div className="Action-buttons">
