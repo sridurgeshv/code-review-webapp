@@ -55,10 +55,10 @@
 .run-button {
   background-color: #28a745;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   color: white;
   width: 75px;
-  height: 30px;
+  height: 40px;
   padding: 6px 12px;
   display: flex;
   align-items: center;
@@ -161,7 +161,7 @@
   
 .Action-buttons {
   margin-top: auto;
-  padding-top: 430px;
+  padding-top: 425px;
   border-top: 1px solid #2a2833;
 }
   
