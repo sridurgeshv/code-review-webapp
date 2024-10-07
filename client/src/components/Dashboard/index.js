@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import CreateProjectModal from '../CreateProjectModal';
 import './index.css';
 
 function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const createNewProject = () => {
     const newProject = {
@@ -67,11 +69,18 @@ function Dashboard() {
         <div className="projects-container">
         <div className="projects-header">
           <h2>Projects</h2>
-          <button className="add-button" onClick={createNewProject}>+</button>
-        </div>
-        
-        <div className="divider"></div>
-        
+          <button 
+          className="add-button" 
+          onClick={() => setIsCreateModalOpen(true)}
+        >
+          +
+        </button>
+      </div>
+      <CreateProjectModal 
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />       
+        <div className="divider"></div>        
         {projects.length === 0 ? (
           <div className="empty-state">
             <p>Projects haven't been assigned</p>

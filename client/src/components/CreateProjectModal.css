@@ -1,0 +1,152 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: #1e1e2e;
+    border-radius: 8px;
+    width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #2a2833;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modal-header h2 {
+    color: white;
+    font-size: 18px;
+    margin: 0;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    width: 45px;
+    height: 35px;
+    color: #a9adc1;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .close-button:hover {
+    color: black;
+    background-color: grey;
+  }
+  
+  .modal-body {
+    padding: 20px;
+  }
+  
+  .input-group {
+    margin-bottom: 20px;
+  }
+  
+  .input-group label {
+    display: block;
+    color: #a9adc1;
+    margin-bottom: 8px;
+  }
+  
+  .template-select {
+    position: relative;
+  }
+
+  .template-select input {
+    width: 100%;
+    padding: 10px;
+    padding-right: 80px;
+    background-color: #13111b;
+    border: 1px solid #2a2833;
+    border-radius: 4px;
+    color: white;
+  }
+
+  .template-select-icons {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 8px;
+    color: #a9adc1;
+  }
+  
+  .template-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #13111b;
+    border: 1px solid #2a2833;
+    border-radius: 4px;
+    margin-top: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1001;
+  }
+  
+  .template-option {
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .template-option:hover {
+    background-color: #2a2833;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 10px;
+    padding-left: 40px;
+    background-color: #13111b;
+    border: 1px solid #2a2833;
+    border-radius: 4px;
+    color: white;
+  }
+  
+  .input-group input:focus {
+    outline: none;
+    border-color: #444;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Optional, if you also want to center vertically */
+}
+
+.create-button {
+    width: 50%;
+    padding: 12px;
+    background-color: #28a745;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+ .create-button:hover {
+    background-color: #218838;
+  }
+  
+  .create-button:disabled {
+    background-color: #2a2833;
+    cursor: not-allowed;
+  }
