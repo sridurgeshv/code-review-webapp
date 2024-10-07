@@ -18,9 +18,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
     { name: 'C', id: 'c' },
     { name: 'Java', id: 'java' },
     { name: 'C++', id: 'cpp' },
-    { name: 'HTML', id: 'html' },
-    { name: 'CSS', id: 'css' },
-    { name: 'JavaScript', id: 'javascript' },
+    { name: 'HTML, CSS, JS', id: 'frontend'},
     { name: 'React', id: 'react' }
   ];
 
@@ -28,8 +26,12 @@ export default function CreateProjectModal({ isOpen, onClose }) {
 
   const handleCreateProject = () => {
     const projectId = Date.now();
+    const isWebTemplate = searchTemplate === 'HTML, CSS, JS';
     onClose();
-    navigate(`/project/${projectId}`, { state: { projectTitle: title } });
+    navigate(`/project/${projectId}`, { state: { 
+      projectTitle: title,
+      isWebTemplate
+    } });
   };
 
   const handleJoinTeam = () => {
