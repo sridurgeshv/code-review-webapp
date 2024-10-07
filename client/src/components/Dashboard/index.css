@@ -38,7 +38,7 @@
   
   .sidebar ul {
     list-style: none;
-    padding-left: 18px;
+    padding-left: 80px;
   }
   
   .sidebar ul li {
@@ -54,8 +54,10 @@
   .sidebar .user-greeting {
     margin-bottom: 20px;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row; 
+    align-items: center; 
+    gap: 10px;
+    margin-left: 15px;
   }
 
   .sidebar .user-greeting .greeting-top {
@@ -66,22 +68,20 @@
   
   .sidebar .user-greeting img {
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
   }
   
   .sidebar .user-greeting .hi-text {
-    font-size: 16px;
-    white-space: nowrap;
+    font-size: 18px;
   }
   
   .sidebar .user-greeting .username {
-    font-size: 16px;
+    font-size: 18px;
     display: block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
   }
   
   .logout-container {
