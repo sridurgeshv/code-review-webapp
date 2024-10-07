@@ -26,7 +26,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
   const handleCreateProject = () => {
     const projectId = Date.now();
     onClose();
-    navigate(`/project/${projectId}`);
+    navigate(`/project/${projectId}`, { state: { projectTitle: title } });
   };
 
   const filteredTemplates = templates.filter(template =>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Pencil, Play } from 'lucide-react';
 import Editor from '../Editor';
 import './index.css';
@@ -7,7 +7,8 @@ import './index.css';
 function Project() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [title, setTitle] = useState('New Project');
+  const location = useLocation();
+  const [title, setTitle] = useState(location.state?.projectTitle || 'New Project');
   const [isEditing, setIsEditing] = useState(false);
 
   const handleTitleSubmit = (e) => {
