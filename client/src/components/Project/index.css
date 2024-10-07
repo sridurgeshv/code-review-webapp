@@ -1,158 +1,201 @@
-.Projects-container {
-    display: flex;
-    height: 100vh;
-    background-color: #1e1e2e;
-    color: white;
-  }
-  
-  .sidebar2 {
-    width: 330px;
-    background-color: #13111b;
-    padding: 20px;
-    border-right: 1px solid #2a2833;
-  }
-  
-  .project-Logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 45px;
-    font-weight: bold;
-    margin-top: 15px;
-    margin-bottom: 30px;
-  }
-  
-  .file-explorer {
-    margin-bottom: 30px;
-  }
-  
-  .file-list {
-    list-style: none;
-  }
-  
-  .file-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 0;
-    cursor: pointer;
-    font-size: 18px;
-    color: #a9adc1;
-  }
-  
-  .file-item:hover {
-    color: #fff;
-  }
-  
-  .file-icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .connected-section {
-    border-top: 1px solid #2a2833;
-    padding-top: 20px;
-  }
-  
-  .connected-title {
-    font-size: 20px;
-    color: white;
-    margin-bottom: 12px;
-  }
-  
-  .user-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background-color: #20abb5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-  }
-  
-  .Action-buttons {
-    margin-top: 330px;
-    padding-top: 20px;
-  }
-  
-  .action-button {
-    width: 100%;
-    padding: 8px;
-    background-color: #2a2833;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
-  
-  .action-button:hover {
-    background-color: #28a745;
-  }
+.project-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e2e;
+  color: white;
+}
 
-  .action-button2 {
-    width: 100%;
-    padding: 8px;
-    background-color: #2a2833;
-    border: none;
-    border-radius: 4px;
-    color: white;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
-  
-  .action-button2:hover {
-    background-color: #f13535;
-  }
+.top-nav {
+  height: 68px;
+  background-color: #13111b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid #2a2833;
+}
 
-  .project-title-container {
-    padding: 10px;
-    margin-top: 10px;
-  }
+.nav-title {
+  display: flex;
+  align-items: center;
+}
   
-  .title-display {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.title-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title-display h1 {
+  font-size: 20px;
+  color: #fff;
+  margin: 0;
+  font-weight: normal;
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  color: #a9adc1;
+  cursor: pointer;
+  padding: 6px;
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-button:hover {
+  background: #545662;
+  color: #1e1c23;
+}
+
+.run-button {
+  background-color: #28a745;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  width: 75px;
+  height: 30px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.run-button:hover {
+  background-color: #218838;
+}
+
+.title-input {
+  background: #2a2833;
+  border: 1px solid #444;
+  color: #fff;
+  font-size: 24px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: 300px;
+  height: 35px;
+}
+
+.title-input:focus {
+  outline: none;
+  border-color: #666;
+}
+
+.main-content2 {
+  flex: 1;
+  display: flex;
+  background-color: #1e1e2e;
+  color: white;
+  overflow: hidden;
+}
+
+.sidebar2 {
+  width: 330px;
+  min-width: 330px;
+  background-color: #13111b;
+  padding: 20px;
+  border-right: 1px solid #2a2833;
+  display: flex;
+  flex-direction: column;
+}
   
-  .title-display h1 {
-    font-size: 24px;
-    color: #fff;
-    margin: 0;
-  }
+.file-explorer {
+  padding: 20px;
+}
   
-  .edit-button {
-    background: none;
-    border: none;
-    color: #a9adc1;
-    cursor: pointer;
-    padding: 6px;
-    width: 75px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
   
-  .edit-button:hover {
-    background: #545662;
-    color: #1e1c23;
-  }
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 18px;
+  color: #a9adc1;
+}
   
-  .title-input {
-    background: #2a2833;
-    border: 1px solid #444;
-    color: #fff;
-    font-size: 24px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    width: 300px;
-  }
+.file-item:hover {
+  color: #fff;
+}
   
-  .title-input:focus {
-    outline: none;
-    border-color: #666;
-  }
+.file-icon {
+  width: 20px;
+  height: 20px;
+}
+  
+.connected-section {
+  border-top: 1px solid #2a2833;
+  padding-top: 20px;
+}
+  
+.connected-title {
+  font-size: 20px;
+  color: white;
+  margin-bottom: 12px;
+}
+  
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #20abb5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  margin-bottom: 15px;
+}
+  
+.Action-buttons {
+  margin-top: auto;
+  padding-top: 430px;
+  border-top: 1px solid #2a2833;
+}
+  
+.action-button {
+  width: 100%;
+  padding: 8px;
+  background-color: #2a2833;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+  
+.action-button:hover {
+  background-color: #28a745;
+}
+
+.action-button2 {
+  width: 100%;
+  padding: 8px;
+  background-color: #2a2833;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+  
+.action-button2:hover {
+  background-color: #f13535;
+}
+
+.editor-container {
+  flex: 1;
+  overflow: hidden;
+}

@@ -7,18 +7,8 @@ import './index.css';
 function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [projects, setProjects] = useState([]);
+  const [projects] = useState([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-  const createNewProject = () => {
-    const newProject = {
-      id: Date.now(),
-      name: `Project ${projects.length + 1}`,
-      created: new Date()
-    };
-    setProjects([...projects, newProject]);
-    navigate(`/project/${newProject.id}`);
-  };
 
   const handleLogout = async () => {
     try {
@@ -101,7 +91,6 @@ function Dashboard() {
         <div className="teams-section">
         <div className="teams-header">
           <h2>Teams</h2>
-          <button className="add-button" onClick={createNewProject}>+</button>
         </div>
           <div className="divider"></div>
           <div className="team-list">
