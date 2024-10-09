@@ -112,6 +112,7 @@ function Project() {
       <div className="main-content2">
         <div className="sidebar2">
         <div className="file-explorer">
+          <h3 className="files-title">Files</h3>
         <ul className="file-list">
           {getTemplateFiles().map((file, index) => (
             <li key={index} className="file-item">
