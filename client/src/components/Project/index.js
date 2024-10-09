@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Pencil, Play } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 import Editor from '../Editor';
 import './index.css';
 
@@ -25,6 +26,7 @@ const Alert = ({ children }) => {
 
 function Project() {
   const { id } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [title, setTitle] = useState(location.state?.projectTitle || 'New Project');
@@ -133,10 +135,14 @@ function Project() {
         </ul>
       </div>
 
-        <div className="connected-section">
-          <h3 className="connected-title">Connected</h3>
-          <div className="user-avatar">M</div>
-        </div>
+          <div className="connected-section">
+            <h3 className="connected-title">Connected</h3>
+            <img
+              src={user?.photoURL}
+              alt="Profile"
+              className="user-connected-avatar"
+            />
+          </div>
 
         <div className="Action-buttons">
           <button className="action-button" onClick={copyRoomId}>Copy ROOM ID</button>

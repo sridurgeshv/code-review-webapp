@@ -151,22 +151,17 @@
   margin-bottom: 12px;
 }
   
-.user-avatar {
-  width: 48px;
-  height: 48px;
+.user-connected-avatar {
+  width: 45px;
+  height: 50px;
   border-radius: 50%;
-  background-color: #20abb5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  color: white;
   margin-bottom: 15px;
+  object-fit: cover;
 }
   
 .Action-buttons {
   margin-top: auto;
-  padding-top: 425px;
+  padding-top: 430px;
   border-top: 1px solid #2a2833;
 }
   
