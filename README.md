@@ -14,6 +14,14 @@
 
 Real-Time Code Review and Collaboration is a tool designed to enhance team productivity by enabling simultaneous code review, suggestions, and bug detection through real-time collaboration.
 
+This application benefits developers, team leads, and project managers by streamlining the code review process, reducing feedback loops, and fostering a collaborative environment. Stakeholders can expect improved code quality, faster development cycles, and enhanced team communication.
+
+## Architecture
+
+The architecture of the application is organized into several folders, each serving a specific purpose in the overall system design. Please refer to the architecture documentation for detailed information.
+
+![Alt Text](https://github.com/sridurgeshv/code-review-webapp/blob/main/arch.JPG)
+
 ## Features
 
 - User profiles and team creation  /
