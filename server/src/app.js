@@ -42,14 +42,14 @@ app.post('/api/execute', async (req, res) => {
           fileName = 'program.js';
           command = 'node';
           break;
-      case 'C':
-          fileName = 'program.c';
-          command = 'gcc program.c -o program && ./program';
-          break;
-      case 'C++':
-          fileName = 'program.cpp';
-          command = 'g++ program.cpp -o program && ./program';
-          break;
+          case 'C':
+            fileName = 'program.c';
+            command = 'gcc program.c -o program && program';
+            break;
+        case 'C++':
+            fileName = 'program.cpp';
+            command = 'g++ program.cpp -o program && program'; 
+            break;
       case 'Java':
           fileName = 'Program.java';
           command = 'javac Program.java && java Program';

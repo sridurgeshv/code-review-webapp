@@ -1,14 +1,32 @@
+.output-container {
+  flex: 1;
+  overflow: hidden;
+  background-color: #1e1e2e;
+  padding: 20px;
+}
+
+.output-title {
+  font-size: 20px;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.output-divider {
+  border: none;
+  border-top: 1px dashed #ffffff;
+  margin: 10px 0 20px 0;
+}
+
 .terminal-content {
     background-color: #13111b;
     border-radius: 4px;
     padding: 12px;
-    height: calc(100% - 40px);
+    height: calc(100% - 70px);
     overflow: auto;
   }
-  
+
   .output-text {
     color: #a9adc1;
-    width: 350px;
     font-family: monospace;
     white-space: pre-wrap;
     word-break: break-all;
