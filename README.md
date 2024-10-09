@@ -24,10 +24,10 @@ The architecture of the application is organized into several folders, each serv
 
 ## Features
 
-- User profiles and team creation  /
-- Real-time coding and commenting using WebRTC /
-- AI-powered code suggestions and bug detection /
-- Frontend built with React and Monaco Editor /
+- User profiles and team creation  
+- Real-time coding and commenting using WebRTC 
+- AI-powered code suggestions and bug detection 
+- Frontend built with React and Monaco Editor 
 - Backend powered by Node.js with WebSocket connections 
 
 ## Installation
