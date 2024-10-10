@@ -33,7 +33,9 @@ function Project() {
   const navigate = useNavigate();
   const location = useLocation();
   const editorRef = useRef(null);
-  const [title, setTitle] = useState(location.state?.projectTitle || 'New Project');
+  const [title, setTitle] = useState(() => {
+    return location.state?.projectTitle || 'New Project';
+  });
   const [isEditing, setIsEditing] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [output, setOutput] = useState('');
@@ -47,18 +49,23 @@ function Project() {
     const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
     setSocket(newSocket);
 
-    newSocket.emit('join-room', {
+    // Ensure we pass the correct title from state
+    const projectData = {
       roomId: id,
       user,
       template: selectedTemplate,
-      projectTitle: location.state?.projectTitle
-    });
+      projectTitle: location.state?.projectTitle || title
+    };
+
+    newSocket.emit('join-room', projectData);
     
     newSocket.on('init-room', ({ users, template, code, title: roomTitle }) => {
       setConnectedUsers(users);
       if (template) setSelectedTemplate(template);
       if (code && editorRef.current) editorRef.current.setValue(code);
-      if (roomTitle) setTitle(roomTitle);
+      if (roomTitle && !location.state?.projectTitle) {
+        setTitle(roomTitle);
+      }
     });
 
     newSocket.on('title-update', ({ title: newTitle }) => {
@@ -72,7 +79,7 @@ function Project() {
     return () => {
       newSocket.disconnect();
     };
-  }, [id, user, selectedTemplate, location.state]);
+  }, [id, user, selectedTemplate, location.state, title]);
 
   const getTemplateFiles = () => {
     switch (selectedTemplate) {
