@@ -94,24 +94,29 @@
   background-color: #1e1e2e;
   color: white;
   overflow: hidden;
+  height: calc(100vh - 68px);  /* Explicit height calculation */
 }
 
 .sidebar2 {
   width: 330px;
   min-width: 330px;
+  height: 100%;  /* Full height of parent */
   background-color: #13111b;
-  padding: 20px;
-  border-right: 1px solid #2a2833;
   display: flex;
   flex-direction: column;
 }
   
 .file-explorer {
-  padding: 20px;
+  padding: 24px 16px;
 }
   
 .files-title {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #2a2833;
 }
 
 .file-list {
@@ -124,7 +129,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 0;
+  padding: 6px 0;
   cursor: pointer;
   font-size: 18px;
   color: #a9adc1;
@@ -140,15 +145,17 @@
 }
   
 .connected-section {
-  border-top: 1px solid #2a2833;
-  padding-top: 20px;
-  margin-left: 16px;
+  padding: 24px 16px;
+  margin: 0;
 }
   
 .connected-title {
-  font-size: 20px;
+  font-size: 16px;
+  font-weight: 500;
   color: white;
-  margin-bottom: 12px;
+  margin: 0 0 12px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #2a2833;
 }
   
 .connected-users {
@@ -168,8 +175,8 @@
   
 .Action-buttons {
   margin-top: auto;
-  padding-top: 430px;
-  border-top: 1px solid #2a2833;
+  padding: 16px;
+  flex: none;
 }
   
 .action-button {
@@ -206,4 +213,5 @@
   flex: 2.5;
   overflow: hidden;
   border-right: 1px solid #2a2833;
+  height: 100%;
 }
