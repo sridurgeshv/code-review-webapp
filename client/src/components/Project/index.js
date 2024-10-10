@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Pencil, Play } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import Terminal from '../Terminal';
 import Editor from '../Editor';
+import { io } from 'socket.io-client';
 import axios from 'axios';
 import './index.css';
 
@@ -36,7 +37,42 @@ function Project() {
   const [isEditing, setIsEditing] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [output, setOutput] = useState('');
-  const selectedTemplate = location.state?.selectedTemplate;
+  const [connectedUsers, setConnectedUsers] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(location.state?.selectedTemplate);
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
+    setSocket(newSocket);
+
+    newSocket.emit('join-room', {
+      roomId: id,
+      user,
+      template: selectedTemplate,
+      projectTitle: location.state?.projectTitle
+    });
+    
+    newSocket.on('init-room', ({ users, template, code, title: roomTitle }) => {
+      setConnectedUsers(users);
+      if (template) setSelectedTemplate(template);
+      if (code && editorRef.current) editorRef.current.setValue(code);
+      if (roomTitle) setTitle(roomTitle);
+    });
+
+    newSocket.on('title-update', ({ title: newTitle }) => {
+      setTitle(newTitle);
+    })
+
+    newSocket.on('room-users', ({ users }) => {
+      setConnectedUsers(users);
+    });
+    
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [id, user, selectedTemplate, location.state]);
 
   const getTemplateFiles = () => {
     switch (selectedTemplate) {
@@ -90,6 +126,9 @@ function Project() {
   const handleTitleSubmit = (e) => {
     if (e.key === 'Enter') {
       setIsEditing(false);
+      if (socket) {
+        socket.emit('update-title', { roomId: id, title });
+      }
     }
   };
 
@@ -97,6 +136,12 @@ function Project() {
     await navigator.clipboard.writeText(id);
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 3000);
+  };
+
+  const handleEditorChange = (code) => {
+    if (socket) {
+      socket.emit('code-change', { roomId: id, code });
+    }
   };
 
   return (
@@ -107,13 +152,19 @@ function Project() {
         </div>
       )}
        <div className="top-nav">
-        <div className="nav-title">
+       <div className="nav-title">
           {isEditing ? (
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={handleTitleSubmit}
+              onBlur={() => {
+                setIsEditing(false);
+                if (socket) {
+                  socket.emit('update-title', { roomId: id, title });
+                }
+              }}
               className="title-input"
               autoFocus
             />
@@ -158,12 +209,20 @@ function Project() {
 
           <div className="connected-section">
             <h3 className="connected-title">Connected</h3>
-            <img
-              src={user?.photoURL}
-              alt="Profile"
-              className="user-connected-avatar"
-            />
-          </div>
+            <div className="connected-users">
+            {connectedUsers
+            .filter(user => user.displayName && user.photoURL)
+            .map(user => (
+              <img
+                key={user.uid}
+                src={user.photoURL}
+                alt={user.displayName}
+                className="user-connected-avatar"
+                title={user.displayName}
+              />
+            ))}
+        </div>
+      </div>
 
         <div className="Action-buttons">
           <button className="action-button" onClick={copyRoomId}>Copy ROOM ID</button>
@@ -171,10 +230,16 @@ function Project() {
         </div>
        </div>
        <div className="editor-container">
-          <Editor
-            ref={editorRef}
-            selectedTemplate={selectedTemplate}
-          />
+       <Editor
+          user={user}
+          ref={editorRef}
+          selectedTemplate={selectedTemplate}
+          onCodeChange={handleEditorChange}
+          onSave={(code) => {
+            setOutput('Code saved and synced with collaborators');
+            setTimeout(() => setOutput(''), 2000);
+          }}
+        />
         </div>
         <Terminal output={output} />
       </div>

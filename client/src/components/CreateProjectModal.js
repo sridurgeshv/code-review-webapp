@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ChevronDown } from 'lucide-react';
+import { io } from 'socket.io-client';
 import './CreateProjectModal.css';
 
-export default function CreateProjectModal({ isOpen, onClose }) {
+export default function CreateProjectModal({ isOpen, onClose, user }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('template');
   const [title, setTitle] = useState('');
@@ -25,13 +26,23 @@ export default function CreateProjectModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   const handleCreateProject = () => {
-    const projectId = Date.now();
+    const projectId = Date.now().toString();
+    const socket = io(process.env.REACT_APP_SERVER_URL || 'http://localhost:5000');
+    
+    socket.emit('join-room', {
+      roomId: projectId,
+      user,
+      template: searchTemplate,
+      projectTitle: title
+    });
+    
+    socket.disconnect();
     onClose();
-    navigate(`/project/${projectId}`, { 
-      state: { 
+    navigate(`/project/${projectId}`, {
+      state: {
         projectTitle: title,
         selectedTemplate: searchTemplate
-      } 
+      }
     });
   };
 
@@ -41,6 +52,7 @@ export default function CreateProjectModal({ isOpen, onClose }) {
       navigate(`/project/${roomId}`);
     }
   };
+
 
   const handleGithubImport = () => {
     if (githubUrl) {

@@ -151,6 +151,13 @@
   margin-bottom: 12px;
 }
   
+.connected-users {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .user-connected-avatar {
   width: 45px;
   height: 45px;

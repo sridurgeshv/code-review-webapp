@@ -19,6 +19,9 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
+// Store room state
+const rooms = new Map();
+
 // Basic route
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
@@ -97,19 +100,86 @@ app.post('/api/execute', async (req, res) => {
 
 // Socket.IO connection
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
 
-  socket.on('join-room', (roomId) => {
+  // Handle room joining
+  socket.on('join-room', ({ roomId, user, template, projectTitle }) => {
     socket.join(roomId);
-    console.log(`User ${socket.id} joined room ${roomId}`);
+
+    if (!rooms.has(roomId)) {
+      rooms.set(roomId, {
+        users: new Map(),
+        code: '',
+        version: 0,
+        template,
+        title: projectTitle || 'New Project'
+      });
+    }
+  
+    const room = rooms.get(roomId);
+
+    // Remove any existing entries for this user
+  for (const [socketId, existingUser] of room.users.entries()) {
+    if (existingUser.uid === user.uid) {
+      room.users.delete(socketId);
+    }
+  }
+  
+  room.users.set(socket.id, user);
+    
+    // Send room state including template to new user
+    socket.emit('init-room', {
+      code: room.code,
+      version: room.version,
+      template: room.template,
+      users: Array.from(room.users.values()),
+      title: room.title
+    });
+
+    io.to(roomId).emit('room-users', {
+      users: Array.from(room.users.values())
+    });
   });
 
-  socket.on('code-change', (data) => {
-    socket.to(data.roomId).emit('code-update', data.code);
+  socket.on('update-title', ({ roomId, title }) => {
+    const room = rooms.get(roomId);
+    if (room) {
+      room.title = title;
+      io.to(roomId).emit('title-update', { title });
+    }
   });
 
+  // Handle code changes
+  socket.on('code-save', ({ roomId, code, version, userId }) => {
+    const room = rooms.get(roomId);
+    if (!room) return;
+
+    room.code = code;
+    room.version = version;
+
+    // Broadcast to ALL clients in the room (including sender for confirmation)
+    io.in(roomId).emit('code-update', {
+      code,
+      version,
+      userId
+    });
+  });
+
+  // Handle disconnection
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    for (const [roomId, room] of rooms.entries()) {
+      if (room.users.has(socket.id)) {
+        room.users.delete(socket.id);
+        
+        io.to(roomId).emit('room-users', {
+          users: Array.from(room.users.values())
+        });
+
+        if (room.users.size === 0) {
+          rooms.delete(roomId);
+        }
+        break;
+      }
+    }
   });
 });
 

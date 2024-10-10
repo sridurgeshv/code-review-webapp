@@ -1,8 +1,53 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import MonacoEditor from '@monaco-editor/react';
+import { Save } from 'lucide-react';
 import './index.css';
 
-const Editor = forwardRef(({ selectedTemplate = 'javascript', onCodeChange }, ref) => {
+const Editor = forwardRef(({ user, selectedTemplate = 'javascript', onCodeChange, onSave }, ref) => {
+  const { id: roomId } = useParams();
+  const [socket, setSocket] = useState(null);
+  const [version, setVersion] = useState(0);
+  const [localCode, setLocalCode] = useState('');
+  const [isApplyingChange, setIsApplyingChange] = useState(false);
+
+  useEffect(() => {
+    if (!user?.displayName) return;
+
+    const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
+    setSocket(newSocket);
+
+    newSocket.emit('join-room', {
+      roomId,
+      user,
+      template: selectedTemplate
+    });
+
+    newSocket.on('init-room', ({ code, version: serverVersion, template }) => {
+      if (ref.current) {
+        ref.current.setValue(code || getDefaultCode(template));
+        setLocalCode(code || getDefaultCode(template));
+        setVersion(serverVersion);
+      }
+    });
+
+    newSocket.on('code-update', ({ code, version: newVersion, userId }) => {
+      console.log('Received code update from:', userId);
+      if (ref.current) {
+        setIsApplyingChange(true);
+        ref.current.setValue(code);
+        setLocalCode(code);
+        setVersion(newVersion);
+        setIsApplyingChange(false);
+      }
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [roomId, user, selectedTemplate]);
+ 
   const getLanguage = () => {
     switch(selectedTemplate) {
       case 'Python': return 'python';
@@ -33,14 +78,42 @@ const Editor = forwardRef(({ selectedTemplate = 'javascript', onCodeChange }, re
     }
   };
 
+  const handleEditorChange = (value) => {
+    if (isApplyingChange) return;
+    setLocalCode(value);
+    if (onCodeChange) onCodeChange(value);
+  };
+
+  const handleSave = () => {
+    if (!socket) return;
+    
+    const newVersion = version + 1;
+    setVersion(newVersion);
+    
+    socket.emit('code-save', {
+      roomId,
+      code: localCode,
+      version: newVersion,
+      userId: socket.id
+    });
+    
+    if (onSave) onSave(localCode);
+  };
+
   return (
     <div className="h-screen">
+      <div className="editor-toolbar">
+        <button onClick={handleSave} className="save-button">
+          <Save size={16} />
+          Save
+        </button>
+      </div>
       <MonacoEditor
         height="90vh"
-        defaultLanguage={getLanguage()}
-        defaultValue={getDefaultCode()}
+        defaultLanguage={getLanguage(selectedTemplate)}
+        defaultValue={getDefaultCode(selectedTemplate)}
         theme="vs-dark"
-        onChange={onCodeChange}
+        onChange={handleEditorChange}
         onMount={(editor) => {
           if (ref) {
             ref.current = editor;
