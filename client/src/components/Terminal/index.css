@@ -90,6 +90,38 @@
     padding: 20px;
   }
   
+  .message {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    max-width: 85%;
+  }
+  
+  .message.user {
+    background-color: #2a2833;
+    margin-left: auto;
+    color: #fff;
+  }
+  
+  .message.assistant {
+    background-color: #1e1e2e;
+    margin-right: auto;
+    color: #a9adc1;
+  }
+  
+  .message.error {
+    background-color: #442222;
+    color: #ff9999;
+    margin-right: auto;
+  }
+  
+  .message.loading {
+    background-color: #1e1e2e;
+    color: #666;
+    margin-right: auto;
+    font-style: italic;
+  }
+
   .message-input-container {
     display: flex;
     gap: 8px;

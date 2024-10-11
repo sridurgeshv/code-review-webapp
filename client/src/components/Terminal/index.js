@@ -1,15 +1,57 @@
 import React, { useState } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
+import axios from 'axios';
 import './index.css';
 
 const Terminal = ({ output }) => {
   const [activeTab, setActiveTab] = useState('terminal');
   const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendMessage = (e) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault();
-    // Message handling logic will go here when API is integrated
-    setMessage('');
+    if (!message.trim()) return;
+
+    setIsLoading(true);
+    const userMessage = { role: 'user', content: message };
+    setMessages(prev => [...prev, userMessage]);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/ai/chat', {
+        message: message
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data && response.data.response) {
+        const aiMessage = { role: 'assistant', content: response.data.response };
+        setMessages(prev => [...prev, aiMessage]);
+      } else {
+        throw new Error('Invalid response format from server');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      let errorMessage = 'Failed to get response. Please try again.';
+      
+      if (error.response) {
+        // Server responded with an error
+        errorMessage = error.response.data?.details || error.response.data?.error || errorMessage;
+      } else if (error.request) {
+        // Request was made but no response received
+        errorMessage = 'No response from server. Please check your connection.';
+      }
+
+      setMessages(prev => [...prev, { 
+        role: 'error', 
+        content: errorMessage
+      }]);
+    } finally {
+      setIsLoading(false);
+      setMessage('');
+    }
   };
 
   return (
@@ -42,9 +84,17 @@ const Terminal = ({ output }) => {
               <h2>AI Assistant</h2>
             </div>
             <div className="ai-messages">
-              <div className="welcome-message">
-                Ask me anything about your code or programming questions!
-              </div>
+              {messages.length === 0 && (
+                <div className="welcome-message">
+                  Ask me anything about your code or programming questions!
+                </div>
+              )}
+              {messages.map((msg, index) => (
+                <div key={index} className={`message ${msg.role}`}>
+                  {msg.content}
+                </div>
+              ))}
+              {isLoading && <div className="message loading">AI is thinking...</div>}
             </div>
             <form onSubmit={handleSendMessage} className="message-input-container">
               <input
@@ -53,8 +103,9 @@ const Terminal = ({ output }) => {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type your message..."
                 className="message-input"
+                disabled={isLoading}
               />
-              <button type="submit" className="send-button">
+              <button type="submit" className="send-button" disabled={isLoading}>
                 <Send size={18} />
               </button>
             </form>

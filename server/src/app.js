@@ -5,19 +5,39 @@ const cors = require('cors');
 const { exec } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
+// const { OpenAI } = require("openai");
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST']
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST']
   }
-});
+  });
 
-app.use(cors());
+// Configure CORS with specific options
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
+
 app.use(express.json());
+
+// Middleware to validate Gemini API key
+const validateApiKey = (req, res, next) => {
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(500).json({
+      error: 'Server configuration error',
+      details: 'Gemini API key is not configured'
+    });
+  }
+  next();
+};
 
 // Store room state
 const rooms = new Map();
@@ -95,6 +115,58 @@ app.post('/api/execute', async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// AI endpoint
+app.post('/api/ai/chat', validateApiKey, async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    if (!message) {
+      return res.status(400).json({
+        error: 'Bad request',
+        details: 'Message is required'
+      });
+    }
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+
+    const chat = model.startChat({
+      history: [
+        {
+          role: "user",
+          parts: [{text: "You are a professional programming assistant. Format your responses clearly and concisely. When sharing code examples, use proper code blocks without quotation marks or asterisks. Keep explanations brief and focused."}]
+        }
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 500,
+      },
+    });
+
+    // Add formatting instructions to the user's message
+    const formattedMessage = `Please provide a clear, professional response with proper formatting for this programming question: ${message}`;
+    const result = await chat.sendMessage([{text: formattedMessage}]);
+    const response = await result.response;
+    
+    // Clean up the response text
+    let text = response.text()
+      .replace(/```python\n/g, '')  // Remove Python code block markers
+      .replace(/```\n?/g, '')       // Remove any remaining code block markers
+      .replace(/\*\*/g, '')         // Remove asterisks
+      .replace(/^"|"$/g, '')        // Remove quotes at start/end
+      .trim();                      // Remove extra whitespace
+
+    res.json({ response: text });
+
+  } catch (error) {
+    console.error('Error in AI chat:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      details: error.message
+    });
   }
 });
 
@@ -186,4 +258,14 @@ io.on('connection', (socket) => {
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`CORS enabled for origin: ${process.env.CLIENT_URL || 'http://localhost:3000'}`);
+});
+
+// Error handling for uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
+process.on('unhandledRejection', (error) => {
+  console.error('Unhandled Rejection:', error);
 });
