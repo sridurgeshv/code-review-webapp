@@ -30,20 +30,81 @@ p {
 }
 
 .start-button {
-  background-color: white;
-  color: black;
-  padding: 10px 30px;
-  border-radius: 8px;
-  font-size: 1.2rem;
-  cursor: pointer;
+  position: relative;
+  width: 150px;
+  height: 55px;
+  border-radius: 45px;
   border: none;
-  width: 175px;
+  background-color: rgb(151, 95, 255); /* Jelly button background */
+  color: white;
+  box-shadow: 0px 10px 10px rgb(210, 187, 253) inset,
+              0px 5px 10px rgba(5, 5, 5, 0.212),
+              0px -10px 10px rgb(124, 54, 255) inset;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
   transition: background-color 0.3s ease;
 }
 
+.start-button::before {
+  width: 70%;
+  height: 2px;
+  position: absolute;
+  background-color: rgba(250, 250, 250, 0.678);
+  content: "";
+  filter: blur(1px);
+  top: 7px;
+  border-radius: 50%;
+}
+
+.start-button::after {
+  width: 70%;
+  height: 2px;
+  position: absolute;
+  background-color: rgba(250, 250, 250, 0.137);
+  content: "";
+  filter: blur(1px);
+  bottom: 7px;
+  border-radius: 50%;
+}
+
 .start-button:hover {
-  background-color: black;
-  color: white;
+  animation: jello-horizontal 0.9s both;
+  color: black;
+  background-color: rgb(151, 95, 255);
+}
+
+/* Jelly button animation */
+@keyframes jello-horizontal {
+  0% {
+    transform: scale3d(1, 1, 1);
+  }
+
+  30% {
+    transform: scale3d(1.25, 0.75, 1);
+  }
+
+  40% {
+    transform: scale3d(0.75, 1.25, 1);
+  }
+
+  50% {
+    transform: scale3d(1.15, 0.85, 1);
+  }
+
+  65% {
+    transform: scale3d(0.95, 1.05, 1);
+  }
+
+  75% {
+    transform: scale3d(1.05, 0.95, 1);
+  }
+
+  100% {
+    transform: scale3d(1, 1, 1);
+  }
 }
 
 .mock-browser {
