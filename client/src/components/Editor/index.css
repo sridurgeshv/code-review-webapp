@@ -14,7 +14,7 @@
 .save-button {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
   padding: 6px 14px;
   width: 100px;
   background-color: transparent; /* Background set to transparent for cloud effect */
@@ -50,4 +50,8 @@
 .save-button:hover {
   background-color: white; /* Retains original hover effect from previous code */
   color: black;
+}
+
+.save-text {
+  font-size: 18px;
 }
