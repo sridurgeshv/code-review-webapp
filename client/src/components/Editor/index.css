@@ -10,19 +10,44 @@
     border-bottom: 1px solid #333;
   }
   
-  .save-button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    width: 100px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .save-button:hover {
-    background-color: #45a049;
-  }
+  /* Merged styles for the save button with the cloud-like effect */
+.save-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  width: 100px;
+  background-color: transparent; /* Background set to transparent for cloud effect */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  fill: rgb(155, 153, 153); /* Cloud icon color */
+}
+
+.icon {
+  transform: scale(1.4);
+  transition: 200ms linear;
+}
+
+.save-button:hover > .icon {
+  transform: scale(1.7);
+}
+
+.save-button:hover > .icon path {
+  fill: #fff;
+  cursor: pointer;
+}
+
+.save-button:hover::after {
+  visibility: visible;
+  opacity: 1;
+  top: -100%;
+}
+
+/* Optional hover effect for save text */
+.save-button:hover {
+  background-color: white; /* Retains original hover effect from previous code */
+  color: black;
+}
