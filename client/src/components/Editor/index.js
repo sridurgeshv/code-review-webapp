@@ -104,7 +104,7 @@ const Editor = forwardRef(({ user, selectedTemplate = 'javascript', onCodeChange
     <div className="h-screen">
       <div className="editor-toolbar">
         <button onClick={handleSave} className="save-button">
-          <Save size={16} />
+          <Save size={18} />
           Save
         </button>
       </div>

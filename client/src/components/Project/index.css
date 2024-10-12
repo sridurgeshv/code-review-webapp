@@ -28,7 +28,7 @@
 }
 
 .title-display h1 {
-  font-size: 20px;
+  font-size: 24px;
   color: #fff;
   margin: 0;
   font-weight: normal;
@@ -111,7 +111,7 @@
 }
   
 .files-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   color: #fff;
   margin: 0 0 12px 0;
@@ -131,7 +131,7 @@
   gap: 12px;
   padding: 6px 0;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 20px;
   color: #a9adc1;
 }
   
@@ -150,7 +150,7 @@
 }
   
 .connected-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   color: white;
   margin: 0 0 12px 0;
