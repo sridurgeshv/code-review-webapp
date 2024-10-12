@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
 import axios from 'axios';
+import Prism from 'prismjs';
 import './index.css';
 
 const Terminal = ({ output }) => {
@@ -54,6 +55,47 @@ const Terminal = ({ output }) => {
     }
   };
 
+  const renderMessage = (msg) => {
+    if (msg.role === 'user') {
+      return <div className="message user">{msg.content}</div>;
+    } else if (msg.role === 'assistant') {
+      if (Array.isArray(msg.content)) {
+        return (
+          <div className="message assistant">
+            {msg.content.map((part, index) => {
+              if (part.type === 'text') {
+                return (
+                  <div 
+                    key={`text-${index}`} 
+                    className="assistant-text"
+                    dangerouslySetInnerHTML={{ __html: part.content }}
+                  />
+                );
+              } else if (part.type === 'code') {
+                return (
+                  <pre key={`code-${index}`} className={`language-${part.language}`}>
+                    <code dangerouslySetInnerHTML={{
+                      __html: Prism.highlight(
+                        part.content,
+                        Prism.languages[part.language] || Prism.languages.javascript,
+                        part.language
+                      )
+                    }} />
+                  </pre>
+                );
+              }
+              return null;
+            })}
+          </div>
+        );
+      } else {
+        return <div className="message assistant">{msg.content}</div>;
+      }
+    } else {
+      return <div className={`message ${msg.role}`}>{msg.content}</div>;
+    }
+  };
+
   return (
     <div className="output-container">
       <div className="tabs">
@@ -90,9 +132,9 @@ const Terminal = ({ output }) => {
                 </div>
               )}
               {messages.map((msg, index) => (
-                <div key={index} className={`message ${msg.role}`}>
-                  {msg.content}
-                </div>
+                <React.Fragment key={index}>
+                  {renderMessage(msg)}
+                </React.Fragment>
               ))}
               {isLoading && <div className="message loading">AI is thinking...</div>}
             </div>

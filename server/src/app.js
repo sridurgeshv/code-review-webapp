@@ -137,29 +137,55 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
       history: [
         {
           role: "user",
-          parts: [{text: "You are a professional programming assistant. Format your responses clearly and concisely. When sharing code examples, use proper code blocks without quotation marks or asterisks. Keep explanations brief and focused."}]
+          parts: [{text: "You are a professional programming assistant. Format your responses with clear code blocks and concise explanations. Always wrap code snippets in triple backticks with the appropriate language identifier."}]
         }
       ],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 500,
+        maxOutputTokens: 800,
       },
     });
 
-    // Add formatting instructions to the user's message
-    const formattedMessage = `Please provide a clear, professional response with proper formatting for this programming question: ${message}`;
+    const formattedMessage = `Provide a professional response with proper formatting for this programming question: ${message}`;
     const result = await chat.sendMessage([{text: formattedMessage}]);
-    const response = await result.response;
-    
-    // Clean up the response text
-    let text = response.text()
-      .replace(/```python\n/g, '')  // Remove Python code block markers
-      .replace(/```\n?/g, '')       // Remove any remaining code block markers
-      .replace(/\*\*/g, '')         // Remove asterisks
-      .replace(/^"|"$/g, '')        // Remove quotes at start/end
-      .trim();                      // Remove extra whitespace
 
-    res.json({ response: text });
+    const response = result.response;
+    const finalResponse = response.text()
+      .replace(/```(\w+)\n/g, (match, lang) => `<code_block language="${lang}">`)
+      .replace(/```/g, '</code_block>')
+      .trim();
+
+    // Split the response into text and code blocks
+    const parts = finalResponse.split(/(<code_block.*?<\/code_block>)/);
+    
+    const processedParts = parts.map(part => {
+      if (part.startsWith('<code_block')) {
+        // Extract language and code from code blocks
+        const match = part.match(/<code_block language="(\w+)">([\s\S]*?)<\/code_block>/);
+        if (match) {
+          return {
+            type: 'code',
+            language: match[1],
+            content: match[2].trim()
+          };
+        }
+      } else {
+        // Process text parts
+        return {
+          type: 'text',
+          content: part.trim()
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+            .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic text
+            .replace(/^# (.*$)/gm, '<h1>$1</h1>') // H1 headers
+            .replace(/^## (.*$)/gm, '<h2>$1</h2>') // H2 headers
+            .replace(/^### (.*$)/gm, '<h3>$1</h3>') // H3 headers
+            .replace(/^- (.*$)/gm, '<li>$1</li>') // Unordered list items
+            .replace(/^(\d+)\. (.*$)/gm, '<li>$2</li>') // Ordered list items
+        };
+      }
+    }).filter(part => part && part.content.trim() !== '');
+
+    res.json({ response: processedParts });
 
   } catch (error) {
     console.error('Error in AI chat:', error);

@@ -82,6 +82,7 @@
     flex: 1;
     overflow-y: auto;
     padding: 16px;
+    max-height: calc(100vh - 200px); /* Adjust based on your layout */
   }
   
   .welcome-message {
@@ -103,11 +104,53 @@
     color: #fff;
   }
   
+  /* Improve readability of assistant text */
+  .assistant-text {
+    color: #e0e0e0;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  }
+
   .message.assistant {
     background-color: #1e1e2e;
     margin-right: auto;
     color: #a9adc1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
   }
+  
+  .message.assistant .assistant-text {
+    margin-bottom: 8px;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .message.assistant pre {
+    background-color: #13111b;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 8px 0;
+    overflow-x: auto;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .message.assistant code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+  
+  .code-block code {
+    display: block;
+  }  
   
   .message.error {
     background-color: #442222;
