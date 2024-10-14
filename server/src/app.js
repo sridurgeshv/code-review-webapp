@@ -6,8 +6,10 @@ const { exec } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
 // const { OpenAI } = require("openai");
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+// const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
+const {Groq} = require("groq-sdk");
+const groq = new Groq({ apiKey: process.env.Gorq_API_KEY });
 
 const app = express();
 const server = http.createServer(app);
@@ -28,12 +30,23 @@ app.use(cors({
 
 app.use(express.json());
 
-// Middleware to validate Gemini API key
+/* Middleware to validate Gemini API key
 const validateApiKey = (req, res, next) => {
   if (!process.env.GEMINI_API_KEY) {
     return res.status(500).json({
       error: 'Server configuration error',
       details: 'Gemini API key is not configured'
+    });
+  }
+  next();
+}; */
+
+// Middleware to validate Gorq API key
+const validateApiKey = (req, res, next) => {
+  if (!process.env.Gorq_API_KEY) {
+    return res.status(500).json({
+      error: 'Server configuration error',
+      details: 'Groq API key is not configured'
     });
   }
   next();
@@ -77,30 +90,9 @@ app.post('/api/execute', async (req, res) => {
           fileName = 'Program.java';
           command = 'javac Program.java && java Program';
           break;
-      case 'React':
-          fileName = 'App.jsx'; // Adjust as needed
-          command = 'npm start'; // Assumes a React setup
-          break;
-      case 'HTML':
-          fileName = 'index.html';
-          command = 'start index.html'; // Open in default browser
-          break;
-      case 'CSS':
-          fileName = 'styles.css';
-          command = 'start index.html'; // Open in default browser
-          break;
-      case 'JS':
-          fileName = 'script.js';
-          command = 'node script.js'; // For running JS files
-          break;
       default:
           return res.status(400).json({ error: 'Unsupported language' });
   }
-  
-  // For HTML, CSS, and JS to run together, ensure they are served correctly.
-  if (language === 'HTML' || language === 'CSS' || language === 'JS') {
-      command = 'start index.html'; // Adjust as needed to serve all files together
-  }  
 
   const filePath = path.join(tempDir, fileName);
     await fs.writeFile(filePath, code);
@@ -118,6 +110,28 @@ app.post('/api/execute', async (req, res) => {
   }
 });
 
+const getGroqChatCompletion = async (userMessageContent) => {
+  return groq.chat.completions.create({
+    messages: [
+      {
+        role: "assistant",
+        content: "You are a professional programming assistant. Format your responses with clear code blocks and concise explanations. Always wrap code snippets in triple backticks with the appropriate language identifier..",
+      },
+      {
+        role: "user",
+        content: userMessageContent, // Dynamic message content
+      },
+    ],
+    model: "llama3-8b-8192",
+    temperature: 0.5,
+    max_tokens: 1024,
+    top_p: 1,
+    stop: null,
+    stream: false,
+  });
+};
+
+/* 
 // AI endpoint
 app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   try {
@@ -130,8 +144,8 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
       });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" }); 
 
     const chat = model.startChat({
       history: [
@@ -174,6 +188,71 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
         return {
           type: 'text',
           content: part.trim()
+           .replace(/\*\*(.*?)\*\/g, '<strong>$1</strong>') // Bold text
+          //  .replace(/\*(.*?)\*g, '<em>$1</em>') // Italic text
+          //  .replace(/^# (.*$)/gm, '<h1>$1</h1>') // H1 headers
+          //  .replace(/^## (.*$)/gm, '<h2>$1</h2>') // H2 headers
+          //  .replace(/^### (.*$)/gm, '<h3>$1</h3>') // H3 headers
+          //  .replace(/^- (.*$)/gm, '<li>$1</li>') // Unordered list items
+          //  .replace(/^(\d+)\. (.*$)/gm, '<li>$2</li>') // Ordered list items
+       // };
+     // }
+   // }).filter(part => part && part.content.trim() !== '');
+
+    /* res.json({ response: processedParts });
+
+  } catch (error) {
+    console.error('Error in AI chat:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      details: error.message
+    });
+  }
+}); */
+
+app.post('/api/ai/chat', validateApiKey, async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    // Validate incoming message
+    if (!message) {
+      return res.status(400).json({
+        error: 'Bad request',
+        details: 'Message is required',
+      });
+    }
+
+    // Get the AI response from Groq
+    const chatCompletion = await getGroqChatCompletion(message);
+    
+    // Handle the response and send it back to the frontend
+    const aiResponse = chatCompletion.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response.';
+    
+    // Process the AI response
+    const finalResponse = aiResponse
+      .replace(/```(\w+)\n/g, (match, lang) => `<code_block language="${lang}">`)
+      .replace(/```/g, '</code_block>')
+      .trim();
+
+    // Split the response into text and code blocks
+    const parts = finalResponse.split(/(<code_block.*?<\/code_block>)/);
+    
+    const processedParts = parts.map(part => {
+      if (part.startsWith('<code_block')) {
+        // Extract language and code from code blocks
+        const match = part.match(/<code_block language="(\w+)">([\s\S]*?)<\/code_block>/);
+        if (match) {
+          return {
+            type: 'code',
+            language: match[1],
+            content: match[2].trim()
+          };
+        }
+      } else {
+        // Process text parts
+        return {
+          type: 'text',
+          content: part.trim()
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
             .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic text
             .replace(/^# (.*$)/gm, '<h1>$1</h1>') // H1 headers
@@ -185,14 +264,11 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
       }
     }).filter(part => part && part.content.trim() !== '');
 
+    // Send the processed response back
     res.json({ response: processedParts });
-
   } catch (error) {
-    console.error('Error in AI chat:', error);
-    res.status(500).json({
-      error: 'Internal server error',
-      details: error.message
-    });
+    console.error('Error processing AI chat:', error);
+    res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 });
 

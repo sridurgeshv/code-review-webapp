@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateProjectModal from '../CreateProjectModal';
@@ -8,11 +8,17 @@ import './index.css';
 function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [projects] = useState([
-    { id: 1, language: 'JavaScript', title: 'Testing', timeAgo: '2 days ago' },
-    { id: 2, language: 'Python', title: 'Iron Man', timeAgo: '4 days ago' }
-  ]);
+  const [projects, setProjects] = useState([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  useEffect(() => {
+    const savedProjects = JSON.parse(localStorage.getItem('savedProjects') || '[]');
+    setProjects(savedProjects);
+  }, []);
+
+  const handleCardClick = (projectId) => {
+    navigate(`/project/${projectId}`);
+  };
 
   const handleLogout = async () => {
     try {
@@ -21,6 +27,28 @@ function Dashboard() {
     } catch (error) {
       console.error('Failed to log out:', error);
     }
+  };
+
+  const getTimeAgo = (date) => {
+    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    let interval = seconds / 31536000;
+    
+    if (interval > 1) return Math.floor(interval) + " years ago";
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + " months ago";
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + " days ago";
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + " hours ago";
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + " minutes ago";
+    return Math.floor(seconds) + " seconds ago";
+  };
+
+  const handleDeleteProject = (projectId) => {
+    const updatedProjects = projects.filter(project => project.id !== projectId);
+    setProjects(updatedProjects);
+    localStorage.setItem('savedProjects', JSON.stringify(updatedProjects));
   };
 
   return (
@@ -85,12 +113,15 @@ function Dashboard() {
           ) : (
             <div className="projects-grid">
               {projects.map((project) => (
-                <Card
-                  key={project.id}
-                  language={project.language}
-                  title={project.title}
-                  timeAgo={project.timeAgo}
-                />
+                 <Card
+                 key={project.id}
+                 id={project.id}
+                 language={project.language}
+                 title={project.title}
+                 timeAgo={getTimeAgo(project.lastEdited)}
+                 onClick={() => handleCardClick(project.id)}
+                 onDelete={handleDeleteProject}
+               />
               ))}
             </div>
           )}

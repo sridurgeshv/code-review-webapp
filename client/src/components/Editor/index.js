@@ -1,5 +1,5 @@
 import React, { forwardRef, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import MonacoEditor from '@monaco-editor/react';
 import { Save } from 'lucide-react';
@@ -7,6 +7,7 @@ import './index.css';
 
 const Editor = forwardRef(({ user, selectedTemplate = 'javascript', onCodeChange, onSave }, ref) => {
   const { id: roomId } = useParams();
+  const location = useLocation();
   const [socket, setSocket] = useState(null);
   const [version, setVersion] = useState(0);
   const [localCode, setLocalCode] = useState('');
@@ -55,8 +56,6 @@ const Editor = forwardRef(({ user, selectedTemplate = 'javascript', onCodeChange
       case 'C': return 'c';
       case 'C++': return 'cpp';
       case 'Java': return 'java';
-      case 'HTML, CSS, JS': return 'javascript';
-      case 'React': return 'javascript';
       default: return 'javascript';
     }
   };
@@ -89,15 +88,33 @@ const Editor = forwardRef(({ user, selectedTemplate = 'javascript', onCodeChange
     
     const newVersion = version + 1;
     setVersion(newVersion);
+
+    const projectDetails = {
+      id: roomId,
+      title: location.state?.projectTitle || 'Untitled Project',
+      language: selectedTemplate,
+      lastEdited: new Date().toISOString()
+    };
     
     socket.emit('code-save', {
       roomId,
       code: localCode,
       version: newVersion,
-      userId: socket.id
+      userId: socket.id,
+      projectDetails
     });
     
-    if (onSave) onSave(localCode);
+    if (onSave) onSave(localCode, projectDetails);
+
+     // Save to localStorage
+    const savedProjects = JSON.parse(localStorage.getItem('savedProjects') || '[]');
+    const existingProjectIndex = savedProjects.findIndex(p => p.id === projectDetails.id);
+    if (existingProjectIndex !== -1) {
+      savedProjects[existingProjectIndex] = projectDetails;
+    } else {
+      savedProjects.push(projectDetails);
+    }
+    localStorage.setItem('savedProjects', JSON.stringify(savedProjects));
   };
 
   return (

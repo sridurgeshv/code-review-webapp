@@ -10,6 +10,9 @@
   }
   
   .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: #f8f9fa;
     padding: 12px 15px;
     font-size: 18px;
@@ -34,4 +37,12 @@
     font-size: 18px;
     color: #6c757d;
     border-top: 1px solid #e9ecef;
+  }
+
+  .delete-icon {
+    cursor: pointer;
+  }
+  
+  .delete-icon:hover {
+    color: red;
   }

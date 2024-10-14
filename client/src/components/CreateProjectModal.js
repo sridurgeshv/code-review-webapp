@@ -18,9 +18,7 @@ export default function CreateProjectModal({ isOpen, onClose, user }) {
     { name: 'Node.js', id: 'nodejs' },
     { name: 'C', id: 'c' },
     { name: 'Java', id: 'java' },
-    { name: 'C++', id: 'cpp' },
-    { name: 'HTML, CSS, JS', id: 'frontend'},
-    { name: 'React', id: 'react' }
+    { name: 'C++', id: 'cpp' }
   ];
 
   if (!isOpen) return null;
