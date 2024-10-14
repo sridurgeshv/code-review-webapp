@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateProjectModal from '../CreateProjectModal';
+import Card from '../Card';
 import './index.css';
 
 function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [projects] = useState([]);
+  const [projects] = useState([
+    { id: 1, language: 'JavaScript', title: 'Testing', timeAgo: '2 days ago' },
+    { id: 2, language: 'Python', title: 'Iron Man', timeAgo: '4 days ago' }
+  ]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -60,35 +64,37 @@ function Dashboard() {
 
         {/* Projects section */}
         <div className="projects-container">
-        <div className="projects-header">
-          <h2>Projects</h2>
-          <button 
-          className="add-button" 
-          onClick={() => setIsCreateModalOpen(true)}
-        >
-          +
-        </button>
-      </div>
-      <CreateProjectModal 
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-      />       
-        <div className="divider"></div>        
-        {projects.length === 0 ? (
-          <div className="empty-state">
-            <p>Projects haven't been assigned</p>
+          <div className="projects-header">
+            <h2>Projects</h2>
+            <button 
+            className="add-button" 
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            +
+          </button>
           </div>
-        ) : (
-          <div className="projects-grid">
-            {projects.map((project) => (
-              <div key={project.id} className="project-item" onClick={() => navigate(`/project/${project.id}`)}>
-                <h3>{project.name}</h3>
-                <p>{new Date(project.created).toLocaleDateString()}</p>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          <CreateProjectModal 
+            isOpen={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+          />       
+          <div className="divider"></div>        
+          {projects.length === 0 ? (
+            <div className="empty-state">
+              <p>Projects haven't been assigned</p>
+            </div>
+          ) : (
+            <div className="projects-grid">
+              {projects.map((project) => (
+                <Card
+                  key={project.id}
+                  language={project.language}
+                  title={project.title}
+                  timeAgo={project.timeAgo}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Teams section */}
         <div className="teams-section">

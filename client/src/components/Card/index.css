@@ -1,25 +1,29 @@
 .card {
     width: 300px;
-    border-radius: 4px;
+    height: 200px;
+    border-radius: 10px;
+    border: 1px solid rgb(37, 128, 174);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     background-color: white;
+    text-align: center;
     overflow: hidden;
   }
   
   .card-header {
     background-color: #f8f9fa;
-    padding: 10px 15px;
-    font-size: 14px;
-    color: #6c757d;
+    padding: 12px 15px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #353638;
     border-bottom: 1px solid #e9ecef;
   }
   
   .card-body {
-    padding: 20px 15px;
+    padding: 36px 15px;
   }
   
   .card-title {
-    font-size: 18px;
+    font-size: 24px;
     margin-bottom: 10px;
     font-weight: bold;
   }
@@ -27,7 +31,7 @@
   .card-footer {
     background-color: #f8f9fa;
     padding: 10px 15px;
-    font-size: 12px;
+    font-size: 18px;
     color: #6c757d;
     border-top: 1px solid #e9ecef;
   }
