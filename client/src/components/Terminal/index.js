@@ -139,6 +139,7 @@ const Terminal = ({ output }) => {
               {isLoading && <div className="message loading">AI is thinking...</div>}
             </div>
             <form onSubmit={handleSendMessage} className="message-input-container">
+            <div className="input-wrapper">
               <input
                 type="text"
                 value={message}
@@ -147,9 +148,10 @@ const Terminal = ({ output }) => {
                 className="message-input"
                 disabled={isLoading}
               />
-              <button type="submit" className="send-button" disabled={isLoading}>
+              <button type="submit" className="send-button2" disabled={isLoading}>
                 <Send size={18} />
               </button>
+              </div>
             </form>
           </div>
         )}
