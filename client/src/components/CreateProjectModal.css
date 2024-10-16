@@ -113,6 +113,16 @@
     z-index: 1001;
   }
   
+  .dropdown-section {
+    padding: 10px;
+  }
+  
+  .dropdown-section h3 {
+    color: #a9adc1;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
   .template-option {
     padding: 10px;
     color: white;

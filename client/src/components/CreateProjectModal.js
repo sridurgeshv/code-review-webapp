@@ -21,6 +21,8 @@ export default function CreateProjectModal({ isOpen, onClose, user }) {
     { name: 'C++', id: 'cpp' }
   ];
 
+  const favorites = ['Python', 'C'];
+
   if (!isOpen) return null;
 
   const handleCreateProject = () => {
@@ -32,7 +34,7 @@ export default function CreateProjectModal({ isOpen, onClose, user }) {
       roomId: projectId,
       user,
       template: searchTemplate,
-      projectTitle: title.trim() // Ensure we trim any whitespace
+      projectTitle: title.trim()
     };
 
     socket.emit('join-room', projectData);
@@ -67,6 +69,41 @@ export default function CreateProjectModal({ isOpen, onClose, user }) {
     template.name.toLowerCase().includes(searchTemplate.toLowerCase())
   );
 
+  const renderTemplateDropdown = () => (
+    <div className="template-dropdown">
+      <div className="dropdown-section">
+        <h3>Favorites</h3>
+        {favorites.map(favTemplate => (
+          <div
+            key={favTemplate}
+            className="template-option"
+            onClick={() => {
+              setSearchTemplate(favTemplate);
+              setIsDropdownOpen(false);
+            }}
+          >
+            {favTemplate}
+          </div>
+        ))}
+      </div>
+      <div className="dropdown-section">
+        <h3>Templates</h3>
+        {filteredTemplates.map(template => (
+          <div
+            key={template.id}
+            className="template-option"
+            onClick={() => {
+              setSearchTemplate(template.name);
+              setIsDropdownOpen(false);
+            }}
+          >
+            {template.name}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
     switch (activeTab) {
       case 'template':
@@ -85,22 +122,7 @@ export default function CreateProjectModal({ isOpen, onClose, user }) {
                   <Search size={18} />
                   <ChevronDown size={18} />
                 </div>
-                {isDropdownOpen && (
-                  <div className="template-dropdown">
-                    {filteredTemplates.map(template => (
-                      <div
-                        key={template.id}
-                        className="template-option"
-                        onClick={() => {
-                          setSearchTemplate(template.name);
-                          setIsDropdownOpen(false);
-                        }}
-                      >
-                        {template.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                {isDropdownOpen && renderTemplateDropdown()}
               </div>
             </div>
             <div className="input-group">
