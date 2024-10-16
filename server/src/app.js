@@ -9,6 +9,7 @@ const path = require('path');
 // const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 const {Groq} = require("groq-sdk");
+const mongoose = require('mongoose');
 const groq = new Groq({ apiKey: process.env.Gorq_API_KEY });
 
 const app = express();
@@ -29,6 +30,37 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+// User schema and model
+const userSchema = new mongoose.Schema({
+  uid: String,
+  email: String,
+  displayName: String,
+  photoURL: String,
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Route to save user data
+app.post('/api/save-user', async (req, res) => {
+  const { uid, email, displayName, photoURL } = req.body;
+
+  try {
+    let user = await User.findOne({ uid });
+    if (!user) {
+      user = new User({ uid, email, displayName, photoURL });
+      await user.save();
+    }
+    res.status(200).json({ message: 'User saved successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error saving user', error });
+  }
+});
 
 /* Middleware to validate Gemini API key
 const validateApiKey = (req, res, next) => {
@@ -269,6 +301,29 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   } catch (error) {
     console.error('Error processing AI chat:', error);
     res.status(500).json({ error: 'Internal server error', details: error.message });
+  }
+});
+
+app.post('/api/update-user', async (req, res) => {
+  const { uid, displayName, photoURL } = req.body;
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { uid },
+      { displayName, photoURL },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Emit a socket event to notify clients of the user update
+    io.emit('user-update', { uid, displayName, photoURL });
+
+    res.status(200).json({ message: 'User updated successfully', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating user', error });
   }
 });
 

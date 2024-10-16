@@ -32,7 +32,7 @@ p {
 .start-button {
   position: relative;
   width: 150px;
-  height: 55px;
+  height: 65px;
   border-radius: 45px;
   border: none;
   background-color: rgb(151, 95, 255); /* Jelly button background */

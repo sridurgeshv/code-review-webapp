@@ -4,9 +4,11 @@ import { useAuth } from '../../contexts/AuthContext';
 import CreateProjectModal from '../CreateProjectModal';
 import Card from '../Card';
 import './index.css';
+import { io } from 'socket.io-client'; // Import socket.io-client
+const socket = io('http://localhost:5000'); // Initialize the socket connection
 
 function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user,setUser,logout } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -15,6 +17,27 @@ function Dashboard() {
     const savedProjects = JSON.parse(localStorage.getItem('savedProjects') || '[]');
     setProjects(savedProjects);
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      socket.emit('join', { userId: user.uid });
+    }
+
+    socket.on('user-update', (updatedUser) => {
+      if (updatedUser.uid === user.uid) {
+        // Update the AuthContext
+        setUser(prevUser => ({
+          ...prevUser,
+          displayName: updatedUser.displayName,
+          photoURL: updatedUser.photoURL,
+        }));
+      }
+    });
+
+    return () => {
+      socket.off('user-update');
+    };
+  }, [user, setUser]);
 
   const handleCardClick = (projectId) => {
     navigate(`/project/${projectId}`);

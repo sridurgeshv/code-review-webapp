@@ -5,6 +5,7 @@ import Welcome from './components/Welcome';
 import SignIn from './components/SignIn';
 import Dashboard from './components/Dashboard';
 import Project from './components/Project';
+import Settings from './pages/Settings';
 import { useAuth } from './contexts/AuthContext';
 
 function PrivateRoute({ children }) {
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/signin" element={<SignIn />} />
+          <Route path="/settings" element={<Settings />} />
           <Route
             path="/dashboard"
             element={             

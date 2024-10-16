@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, googleProvider } from '../config/firebase';
-import { signInWithPopup, signOut } from 'firebase/auth';
+import { signInWithPopup, signOut , updateProfile} from 'firebase/auth';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -13,14 +14,17 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        setUser({
+        const userData = {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
-          photoURL: user.photoURL // Ensure photoURL is included
-        });
+          photoURL: user.photoURL, // Ensure photoURL is included
+        };
+        // Send user data to the backend
+        await axios.post('http://localhost:5000/api/save-user', userData);
+        setUser(userData);
       } else {
         setUser(null);
       }
@@ -43,10 +47,34 @@ export function AuthProvider({ children }) {
     return signOut(auth);
   };
 
+  const updateUser = async (updatedData) => {
+    try {
+      // Update Firebase auth profile
+      await updateProfile(auth.currentUser, updatedData);
+      
+      // Update backend
+      const response = await axios.post('http://localhost:5000/api/update-user', {
+        uid: user.uid,
+        ...updatedData
+      });
+      
+      if (response.data.message === 'User updated successfully') {
+        // Update local state
+        setUser(prevUser => ({ ...prevUser, ...updatedData }));
+        return true;
+      }
+    } catch (error) {
+      console.error('Error updating user:', error);
+      return false;
+    }
+  };
+
   const value = {
     user,
     signInWithGoogle,
-    logout
+    setUser,
+    logout,
+    updateUser
   };
 
   return (
