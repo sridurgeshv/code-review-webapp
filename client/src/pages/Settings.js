@@ -80,9 +80,11 @@ function Settings() {
             <img src={photoURL} alt="Profile" />
           </div>
         )}
-        <button type="submit" disabled={isLoading}>
+        <div className="Update-button">
+        <button className="update-btn" type="submit" disabled={isLoading}>
           {isLoading ? 'Updating...' : 'Update Profile'}
         </button>
+        </div>
       </form>
       {message && <p className="message">{message}</p>}
       {message === 'Profile updated successfully!' && (
