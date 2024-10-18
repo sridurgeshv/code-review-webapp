@@ -7,6 +7,7 @@ const fs = require('fs').promises;
 const path = require('path');
 // const { OpenAI } = require("openai");
 // const { GoogleGenerativeAI } = require('@google/generative-ai');
+const marked = require('marked');
 require('dotenv').config();
 const {Groq} = require("groq-sdk");
 const mongoose = require('mongoose');
@@ -269,7 +270,6 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   try {
     const { message } = req.body;
 
-    // Validate incoming message
     if (!message) {
       return res.status(400).json({
         error: 'Bad request',
@@ -277,50 +277,15 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
       });
     }
 
-    // Get the AI response from Groq
     const chatCompletion = await getGroqChatCompletion(message);
     
-    // Handle the response and send it back to the frontend
     const aiResponse = chatCompletion.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response.';
     
-    // Process the AI response
-    const finalResponse = aiResponse
-      .replace(/```(\w+)\n/g, (match, lang) => `<code_block language="${lang}">`)
-      .replace(/```/g, '</code_block>')
-      .trim();
+    // Convert markdown to HTML
+    const htmlResponse = marked.parse(aiResponse);
 
-    // Split the response into text and code blocks
-    const parts = finalResponse.split(/(<code_block.*?<\/code_block>)/);
-    
-    const processedParts = parts.map(part => {
-      if (part.startsWith('<code_block')) {
-        // Extract language and code from code blocks
-        const match = part.match(/<code_block language="(\w+)">([\s\S]*?)<\/code_block>/);
-        if (match) {
-          return {
-            type: 'code',
-            language: match[1],
-            content: match[2].trim()
-          };
-        }
-      } else {
-        // Process text parts
-        return {
-          type: 'text',
-          content: part.trim()
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
-            .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic text
-            .replace(/^# (.*$)/gm, '<h1>$1</h1>') // H1 headers
-            .replace(/^## (.*$)/gm, '<h2>$1</h2>') // H2 headers
-            .replace(/^### (.*$)/gm, '<h3>$1</h3>') // H3 headers
-            .replace(/^- (.*$)/gm, '<li>$1</li>') // Unordered list items
-            .replace(/^(\d+)\. (.*$)/gm, '<li>$2</li>') // Ordered list items
-        };
-      }
-    }).filter(part => part && part.content.trim() !== '');
-
-    // Send the processed response back
-    res.json({ response: processedParts });
+    // Send the HTML response back
+    res.json({ response: htmlResponse });
   } catch (error) {
     console.error('Error processing AI chat:', error);
     res.status(500).json({ error: 'Internal server error', details: error.message });

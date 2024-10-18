@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
 import axios from 'axios';
-import Prism from 'prismjs';
 import './index.css';
+import './aiStyles.css';
 
 const Terminal = ({ output }) => {
   const [activeTab, setActiveTab] = useState('terminal');
@@ -38,10 +38,8 @@ const Terminal = ({ output }) => {
       let errorMessage = 'Failed to get response. Please try again.';
       
       if (error.response) {
-        // Server responded with an error
         errorMessage = error.response.data?.details || error.response.data?.error || errorMessage;
       } else if (error.request) {
-        // Request was made but no response received
         errorMessage = 'No response from server. Please check your connection.';
       }
 
@@ -59,38 +57,14 @@ const Terminal = ({ output }) => {
     if (msg.role === 'user') {
       return <div className="message user">{msg.content}</div>;
     } else if (msg.role === 'assistant') {
-      if (Array.isArray(msg.content)) {
-        return (
-          <div className="message assistant">
-            {msg.content.map((part, index) => {
-              if (part.type === 'text') {
-                return (
-                  <div 
-                    key={`text-${index}`} 
-                    className="assistant-text"
-                    dangerouslySetInnerHTML={{ __html: part.content }}
-                  />
-                );
-              } else if (part.type === 'code') {
-                return (
-                  <pre key={`code-${index}`} className={`language-${part.language}`}>
-                    <code dangerouslySetInnerHTML={{
-                      __html: Prism.highlight(
-                        part.content,
-                        Prism.languages[part.language] || Prism.languages.javascript,
-                        part.language
-                      )
-                    }} />
-                  </pre>
-                );
-              }
-              return null;
-            })}
-          </div>
-        );
-      } else {
-        return <div className="message assistant">{msg.content}</div>;
-      }
+      return (
+        <div className="message assistant">
+          <div 
+            className="prose prose-sm max-w-none dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: msg.content }}
+          />
+        </div>
+      );
     } else {
       return <div className={`message ${msg.role}`}>{msg.content}</div>;
     }

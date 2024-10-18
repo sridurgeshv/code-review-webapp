@@ -1,0 +1,91 @@
+/* aiStyles.css */
+.message.assistant {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .message.assistant h1,
+  .message.assistant h2,
+  .message.assistant h3,
+  .message.assistant h4,
+  .message.assistant h5,
+  .message.assistant h6 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+  }
+  
+  .message.assistant h1 { font-size: 1.8em; }
+  .message.assistant h2 { font-size: 1.5em; }
+  .message.assistant h3 { font-size: 1.3em; }
+  .message.assistant h4 { font-size: 1.2em; }
+  .message.assistant h5 { font-size: 1.1em; }
+  .message.assistant h6 { font-size: 1em; }
+  
+  .message.assistant p {
+    margin-bottom: 1em;
+  }
+  
+  .message.assistant ul,
+  .message.assistant ol {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+  }
+  
+  .message.assistant li {
+    margin-bottom: 0.5em;
+  }
+  
+  .message.assistant code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #d3cccc;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+  }
+  
+  .message.assistant pre {
+    background-color: #d3cccc;
+    padding: 1em;
+    border-radius: 5px;
+    overflow-x: auto;
+  }
+  
+  .message.assistant pre code {
+    background-color: transparent;
+    padding: 0;
+  }
+  
+  .message.assistant a {
+    color: #8f8a84;
+    text-decoration: none;
+  }
+  
+  .message.assistant a:hover {
+    text-decoration: underline;
+  }
+  
+  .message.assistant blockquote {
+    border-left: 4px solid #064733;
+    padding-left: 1em;
+    margin-left: 0;
+    color: #666;
+  }
+  
+  .message.assistant table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1em;
+  }
+  
+  .message.assistant th,
+  .message.assistant td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .message.assistant th {
+    background-color: #f2f2f287;
+    font-weight: bold;
+  }
