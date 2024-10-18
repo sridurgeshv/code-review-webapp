@@ -45,7 +45,7 @@ function Project() {
 
   useEffect(() => {
     if (!user) return;
-  
+
     const fetchProject = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/get-project/${id}`);
@@ -59,8 +59,8 @@ function Project() {
         console.error('Error fetching project:', error);
       }
     };
-  
-    fetchProject();  
+
+    fetchProject();
 
     const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
     setSocket(newSocket);
@@ -148,7 +148,7 @@ function Project() {
   };
 
   const handleTitleSubmit = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' || e.type === 'blur') {
       setIsEditing(false);
       if (socket) {
         socket.emit('update-title', { roomId: id, title });
@@ -213,12 +213,7 @@ function Project() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               onKeyDown={handleTitleSubmit}
-              onBlur={() => {
-                setIsEditing(false);
-                if (socket) {
-                  socket.emit('update-title', { roomId: id, title });
-                }
-              }}
+              onBlur={handleTitleSubmit}
               className="title-input"
               autoFocus
             />
