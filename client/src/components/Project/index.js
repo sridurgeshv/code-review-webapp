@@ -45,37 +45,54 @@ function Project() {
 
   useEffect(() => {
     if (!user) return;
+  
+    const fetchProject = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/get-project/${id}`);
+        const project = response.data;
+        setTitle(project.title || location.state?.projectTitle || 'New Project');
+        setSelectedTemplate(project.template || location.state?.selectedTemplate);
+        if (editorRef.current && project.code) {
+          editorRef.current.setValue(project.code);
+        }
+      } catch (error) {
+        console.error('Error fetching project:', error);
+      }
+    };
+  
+    fetchProject();  
 
     const newSocket = io(process.env.REACT_APP_API_URL || 'http://localhost:5001');
     setSocket(newSocket);
 
-    // Ensure we pass the correct title from state
     const projectData = {
       roomId: id,
       user,
       template: selectedTemplate,
-      projectTitle: location.state?.projectTitle || title
+      projectTitle: title
     };
 
     newSocket.emit('join-room', projectData);
-    
+
     newSocket.on('init-room', ({ users, template, code, title: roomTitle }) => {
-      setConnectedUsers(users);
+      setConnectedUsers(users.filter((u, index, self) =>
+        index === self.findIndex((t) => t.uid === u.uid)
+      ));
       if (template) setSelectedTemplate(template);
       if (code && editorRef.current) editorRef.current.setValue(code);
-      if (roomTitle && !location.state?.projectTitle) {
-        setTitle(roomTitle);
-      }
+      if (roomTitle) setTitle(roomTitle);
     });
 
     newSocket.on('title-update', ({ title: newTitle }) => {
       setTitle(newTitle);
-    })
-
-    newSocket.on('room-users', ({ users }) => {
-      setConnectedUsers(users);
     });
-    
+  
+    newSocket.on('room-users', ({ users }) => {
+      setConnectedUsers(users.filter((u, index, self) =>
+        index === self.findIndex((t) => t.uid === u.uid)
+      ));
+    });
+  
     return () => {
       newSocket.disconnect();
     };
@@ -148,6 +165,36 @@ function Project() {
   const handleEditorChange = (code) => {
     if (socket) {
       socket.emit('code-change', { roomId: id, code });
+    }
+  };
+
+  const handleSave = async (code) => {
+    try {
+      const projectDetails = {
+        id,
+        title,
+        language: selectedTemplate,
+        code,
+        lastEdited: new Date().toISOString()
+      };
+
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/save-project`, projectDetails);
+      
+      if (socket) {
+        socket.emit('code-save', {
+          roomId: id,
+          code,
+          version: Date.now(),
+          userId: socket.id,
+          projectDetails
+        });
+      }
+
+      setOutput('Code saved and synced with collaborators');
+      setTimeout(() => setOutput(''), 2000);
+    } catch (error) {
+      console.error('Error saving project:', error);
+      setOutput('Error saving project');
     }
   };
 
@@ -242,10 +289,7 @@ function Project() {
           ref={editorRef}
           selectedTemplate={selectedTemplate}
           onCodeChange={handleEditorChange}
-          onSave={(code) => {
-            setOutput('Code saved and synced with collaborators');
-            setTimeout(() => setOutput(''), 2000);
-          }}
+          onSave={handleSave}
         />
         </div>
         <Terminal output={output} />

@@ -12,6 +12,9 @@ const {Groq} = require("groq-sdk");
 const mongoose = require('mongoose');
 const groq = new Groq({ apiKey: process.env.Gorq_API_KEY });
 
+const sqlite3 = require('sqlite3').verbose();
+const { open } = require('sqlite');
+
 const app = express();
 const server = http.createServer(app);
 
@@ -30,6 +33,26 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// SQLite setup
+let db;
+(async () => {
+  db = await open({
+    filename: './database.sqlite',
+    driver: sqlite3.Database
+  });
+  
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS projects (
+      id TEXT PRIMARY KEY,
+      title TEXT,
+      template TEXT,
+      code TEXT,
+      lastEdited TEXT
+    )
+  `);
+})();
+
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -327,35 +350,63 @@ app.post('/api/update-user', async (req, res) => {
   }
 });
 
+// Save project endpoint
+app.post('/api/save-project', async (req, res) => {
+  const { id, title, template, code, lastEdited } = req.body;
+  try {
+    await db.run(
+      'INSERT OR REPLACE INTO projects (id, title, template, code, lastEdited) VALUES (?, ?, ?, ?, ?)',
+      [id, title, template, code, lastEdited]
+    );
+    res.json({ message: 'Project saved successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get project endpoint
+app.get('/api/get-project/:id', async (req, res) => {
+  try {
+    const project = await db.get('SELECT * FROM projects WHERE id = ?', req.params.id);
+    if (project) {
+      res.json(project);
+    } else {
+      res.status(404).json({ message: 'Project not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get all projects endpoint
+app.get('/api/get-all-projects', async (req, res) => {
+  try {
+    const projects = await db.all('SELECT id, title, template, lastEdited FROM projects');
+    res.json(projects);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Socket.IO connection
 io.on('connection', (socket) => {
-
-  // Handle room joining
-  socket.on('join-room', ({ roomId, user, template, projectTitle }) => {
+  socket.on('join-room', async ({ roomId, user, template, projectTitle }) => {
     socket.join(roomId);
 
     if (!rooms.has(roomId)) {
+      const project = await db.get('SELECT * FROM projects WHERE id = ?', roomId);
       rooms.set(roomId, {
         users: new Map(),
-        code: '',
+        code: project ? project.code : '',
         version: 0,
-        template,
-        title: projectTitle || 'New Project'
+        template: project ? project.template : template,
+        title: project ? project.title : (projectTitle || 'New Project')
       });
     }
   
     const room = rooms.get(roomId);
+    room.users.set(socket.id, user);
 
-    // Remove any existing entries for this user
-  for (const [socketId, existingUser] of room.users.entries()) {
-    if (existingUser.uid === user.uid) {
-      room.users.delete(socketId);
-    }
-  }
-  
-  room.users.set(socket.id, user);
-    
-    // Send room state including template to new user
     socket.emit('init-room', {
       code: room.code,
       version: room.version,
@@ -378,14 +429,18 @@ io.on('connection', (socket) => {
   });
 
   // Handle code changes
-  socket.on('code-save', ({ roomId, code, version, userId }) => {
+  socket.on('code-save', async ({ roomId, code, version, userId, projectDetails }) => {
     const room = rooms.get(roomId);
     if (!room) return;
 
     room.code = code;
     room.version = version;
 
-    // Broadcast to ALL clients in the room (including sender for confirmation)
+    await db.run(
+      'INSERT OR REPLACE INTO projects (id, title, template, code, lastEdited) VALUES (?, ?, ?, ?, ?)',
+      [roomId, projectDetails.title, projectDetails.language, code, projectDetails.lastEdited]
+    );
+
     io.in(roomId).emit('code-update', {
       code,
       version,
@@ -398,11 +453,9 @@ io.on('connection', (socket) => {
     for (const [roomId, room] of rooms.entries()) {
       if (room.users.has(socket.id)) {
         room.users.delete(socket.id);
-        
         io.to(roomId).emit('room-users', {
           users: Array.from(room.users.values())
         });
-
         if (room.users.size === 0) {
           rooms.delete(roomId);
         }

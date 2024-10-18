@@ -28,20 +28,18 @@ export default function CreateProjectModal({ isOpen, onClose, user }) {
   const handleCreateProject = () => {
     const projectId = Date.now().toString();
     const socket = io(process.env.REACT_APP_SERVER_URL || 'http://localhost:5000');
-    
-    // Updated to ensure project title is properly passed
+  
     const projectData = {
       roomId: projectId,
       user,
       template: searchTemplate,
       projectTitle: title.trim()
     };
-
+  
     socket.emit('join-room', projectData);
     socket.disconnect();
     onClose();
-
-    // Pass the project title in navigation state
+  
     navigate(`/project/${projectId}`, {
       state: {
         projectTitle: title.trim(),
