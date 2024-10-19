@@ -266,6 +266,24 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   }
 }); */
 
+// Modify the marked options
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  highlight: function(code, language) {
+    const hljs = require('highlight.js');
+    const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+    return hljs.highlight(validLanguage, code).value;
+  },
+  gfm: true,
+  breaks: true, // Enable line breaks
+  smartLists: true,
+  xhtml: false
+});
+
+function formatAIResponse(htmlContent) {
+  return htmlContent; // Remove the wrapping div
+}
+
 app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   try {
     const { message } = req.body;
@@ -278,14 +296,16 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
     }
 
     const chatCompletion = await getGroqChatCompletion(message);
-    
     const aiResponse = chatCompletion.choices[0]?.message?.content || 'Sorry, I couldn\'t generate a response.';
     
-    // Convert markdown to HTML
+    // Convert markdown to HTML with custom options
     const htmlResponse = marked.parse(aiResponse);
 
-    // Send the HTML response back
-    res.json({ response: htmlResponse });
+    // Wrap the response in a consistent structure
+    const formattedResponse = formatAIResponse(htmlResponse);
+
+    // Send the formatted HTML response back
+    res.json({ response: formattedResponse });
   } catch (error) {
     console.error('Error processing AI chat:', error);
     res.status(500).json({ error: 'Internal server error', details: error.message });

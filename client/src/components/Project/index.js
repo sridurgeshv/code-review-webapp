@@ -110,20 +110,6 @@ function Project() {
         return [{ name: 'main.cpp', icon: '📄' }];
       case 'Java':
         return [{ name: 'Main.java', icon: '📄' }];
-      case 'HTML, CSS, JS':
-        return [
-          { name: 'index.html', icon: '📄' },
-          { name: 'style.css', icon: '📄' },
-          { name: 'script.js', icon: '📄' }
-        ];
-      case 'React':
-        return [
-          { name: 'src', icon: '📁', children: [
-            { name: 'App.jsx', icon: '📄' },
-            { name: 'index.js', icon: '📄' }
-          ]},
-          { name: 'index.html', icon: '📄' }
-        ];
       default:
         return [{ name: 'main.txt', icon: '📄' }];
     }

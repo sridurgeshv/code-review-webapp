@@ -1,0 +1,136 @@
+.project-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .project-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .icon-wrapper {
+    background-color: #e0f2ff;
+    padding: 10px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon {
+    color: #007acc;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-left: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .card-body {
+    margin-bottom: 12px;
+  }
+  
+  .card-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    color: #666;
+  }
+  
+  .info-icon {
+    margin-right: 8px;
+    color: #888;
+  }
+  
+  .info-text {
+    font-size: 0.875rem;
+  }
+  
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #007acc;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .error-message {
+    background-color: #ffe0e0;
+    padding: 20px;
+    border-radius: 8px;
+    color: #d9534f;
+    text-align: center;
+  }
+  
+  .project-list-container {
+    background: linear-gradient(to bottom right, #007acc, #aa00ff);
+    padding: 40px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .project-list-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 40px;
+  }
+  
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  .no-projects-message {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .no-project-icon {
+    width: 64px;
+    height: 64px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  
+  .no-projects-message h3 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  
+  .no-projects-message p {
+    font-size: 1rem;
+    color: #555;
+  }

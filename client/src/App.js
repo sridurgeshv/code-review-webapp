@@ -7,6 +7,7 @@ import Dashboard from './components/Dashboard';
 import Project from './components/Project';
 import Settings from './pages/Settings';
 import { useAuth } from './contexts/AuthContext';
+import ProjectList from './pages/ProjectPage';
 
 function PrivateRoute({ children }) {
   const { user } = useAuth();
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Welcome />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/projects" element={<ProjectList />} />
           <Route
             path="/dashboard"
             element={             
