@@ -3,20 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import CreateProjectModal from '../CreateProjectModal';
 import Card from '../Card';
+import axios from 'axios';
+import { io } from 'socket.io-client'; 
 import './index.css';
-import { io } from 'socket.io-client'; // Import socket.io-client
-const socket = io('http://localhost:5000'); // Initialize the socket connection
+
+const socket = io('http://localhost:5000'); 
 
 function Dashboard() {
   const { user,setUser,logout } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [collaborations, setCollaborations] = useState([]);
 
   useEffect(() => {
     const savedProjects = JSON.parse(localStorage.getItem('savedProjects') || '[]');
     setProjects(savedProjects);
-  }, []);
+
+    if (user) {
+      fetchCollaborations();
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user) {
@@ -41,6 +48,15 @@ function Dashboard() {
 
   const handleCardClick = (projectId) => {
     navigate(`/project/${projectId}`);
+  };
+
+  const fetchCollaborations = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/get-collaborations/${user.uid}`);
+      setCollaborations(response.data);
+    } catch (error) {
+      console.error('Error fetching collaborations:', error);
+    }
   };
 
   const handleLogout = async () => {
@@ -157,22 +173,19 @@ function Dashboard() {
         </div>
           <div className="divider"></div>
           <div className="team-list">
-            <div className="team-item">
-              <img src="https://via.placeholder.com/50" alt="User 1" />
-              <span>User 1</span>
-            </div>
-            <div className="team-item">
-              <img src="https://via.placeholder.com/50" alt="User 2" />
-              <span>User 2</span>
-            </div>
-            <div className="team-item">
-              <img src="https://via.placeholder.com/50" alt="User 3" />
-              <span>User 3</span>
-            </div>
-            <div className="team-item">
-              <img src="https://via.placeholder.com/50" alt="User 4" />
-              <span>User 4</span>
-            </div>
+          {collaborations.slice(0, 4).map((collab, index) => (
+              <div key={collab.id} className="team-item">
+                <img src={collab.collaborator.photoURL || "https://via.placeholder.com/50"} alt={collab.collaborator.displayName} />
+                <span>{collab.collaborator.displayName}</span>
+              </div>
+            ))}
+            {collaborations.length > 4 && (
+              <div className="team-item more" onClick={() => navigate('/teams')}>
+                <div className="more-circle">
+                  <span>More</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

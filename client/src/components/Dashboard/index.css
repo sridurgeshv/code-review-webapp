@@ -245,3 +245,22 @@
     display: block;
     font-size: 18px;
   }  
+
+  .team-item.more {
+    cursor: pointer;
+  }
+  
+  .more-circle {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .more-circle span {
+    font-size: 16px;
+    color: #333;
+  }

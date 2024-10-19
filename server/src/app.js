@@ -5,8 +5,8 @@ const cors = require('cors');
 const { exec } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
-// const { OpenAI } = require("openai");
 // const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { v4: uuidv4 } = require('uuid');
 const marked = require('marked');
 require('dotenv').config();
 const {Groq} = require("groq-sdk");
@@ -70,6 +70,18 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+// Add this schema after the existing User schema
+const collaborationSchema = new mongoose.Schema({
+  id: { type: String, default: uuidv4 },
+  userId: String,
+  collaboratorId: String,
+  projectId: String,
+  projectTitle: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Collaboration = mongoose.model('Collaboration', collaborationSchema);
+
 // Route to save user data
 app.post('/api/save-user', async (req, res) => {
   const { uid, email, displayName, photoURL } = req.body;
@@ -83,6 +95,52 @@ app.post('/api/save-user', async (req, res) => {
     res.status(200).json({ message: 'User saved successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error saving user', error });
+  }
+});
+
+// Add this endpoint to record collaborations
+app.post('/api/record-collaboration', async (req, res) => {
+  const { userId, collaboratorId, projectId, projectTitle } = req.body;
+  try {
+    const collaboration = new Collaboration({
+      userId,
+      collaboratorId,
+      projectId,
+      projectTitle
+    });
+    await collaboration.save();
+    res.status(200).json({ message: 'Collaboration recorded successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error recording collaboration', error });
+  }
+});
+
+// Add this endpoint to get collaborations for a user
+app.get('/api/get-collaborations/:userId', async (req, res) => {
+  try {
+    const collaborations = await Collaboration.find({ userId: req.params.userId })
+      .sort('-createdAt')
+      .limit(5);
+    const collaboratorIds = collaborations.map(c => c.collaboratorId);
+    const collaborators = await User.find({ uid: { $in: collaboratorIds } });
+    
+    const result = collaborations.map(c => {
+      const collaborator = collaborators.find(user => user.uid === c.collaboratorId);
+      return {
+        id: c.id,
+        projectTitle: c.projectTitle,
+        createdAt: c.createdAt,
+        collaborator: {
+          uid: collaborator.uid,
+          displayName: collaborator.displayName,
+          photoURL: collaborator.photoURL
+        }
+      };
+    });
+    
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching collaborations', error });
   }
 });
 
@@ -389,6 +447,22 @@ io.on('connection', (socket) => {
       });
     }
   
+     // Record collaboration for each existing user in the room
+     for (const [, existingUser] of room.users) {
+      if (existingUser.uid !== user.uid) {
+        await Collaboration.findOneAndUpdate(
+          { userId: existingUser.uid, collaboratorId: user.uid, projectId: roomId },
+          { projectTitle: room.title, $setOnInsert: { createdAt: new Date() } },
+          { upsert: true, new: true }
+        );
+        await Collaboration.findOneAndUpdate(
+          { userId: user.uid, collaboratorId: existingUser.uid, projectId: roomId },
+          { projectTitle: room.title, $setOnInsert: { createdAt: new Date() } },
+          { upsert: true, new: true }
+        );
+      }
+    }
+
     const room = rooms.get(roomId);
     room.users.set(socket.id, user);
 
