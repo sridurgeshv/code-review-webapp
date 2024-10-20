@@ -110,53 +110,35 @@ app.post('/api/save-user', async (req, res) => {
   }
 });
 
-// Add this endpoint to record collaborations
-app.post('/api/record-collaboration', async (req, res) => {
-  const { userId, collaboratorId, projectId, projectTitle } = req.body;
-  const id = uuidv4();
-  const createdAt = new Date().toISOString();
-  
-  try {
-    await db.run(
-      'INSERT INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-      [id, userId, collaboratorId, projectId, projectTitle, createdAt]
-    );
-    res.status(200).json({ message: 'Collaboration recorded successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error recording collaboration', error: error.message });
-  }
-});
-
-// Add this endpoint to get collaborations for a user
 app.get('/api/get-collaborations/:userId', async (req, res) => {
   try {
-    const collaborations = await db.all(
-      'SELECT DISTINCT collaboratorId, projectId, projectTitle, MAX(createdAt) as createdAt FROM collaborations WHERE userId = ? GROUP BY collaboratorId ORDER BY createdAt DESC LIMIT 5',
-      req.params.userId
-    );
-    
-    const collaboratorIds = collaborations.map(c => c.collaboratorId);
-    const collaborators = await User.find({ uid: { $in: collaboratorIds } });
-
-    const result = collaborations.map(c => {
-      const collaborator = collaborators.find(user => user.uid === c.collaboratorId);
-      return {
-        id: c.projectId,
-        projectTitle: c.projectTitle,
-        createdAt: c.createdAt,
-        collaborator: {
-          uid: collaborator.uid,
-          displayName: collaborator.displayName,
-          photoURL: collaborator.photoURL
-        }
-      };
-    });
-
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching collaborations', error: error.message });
+  const collaborations = await db.all(
+  'SELECT DISTINCT collaboratorId, projectId, projectTitle, MAX(createdAt) as createdAt FROM collaborations WHERE userId = ? GROUP BY collaboratorId ORDER BY createdAt DESC LIMIT 5',
+  req.params.userId
+  );
+  
+  const collaboratorIds = collaborations.map(c => c.collaboratorId);
+  const collaborators = await User.find({ uid: { $in: collaboratorIds } });
+  
+  const result = collaborations.map(c => {
+  const collaborator = collaborators.find(user => user.uid === c.collaboratorId);
+  return {
+  id: c.projectId,
+  projectTitle: c.projectTitle,
+  createdAt: c.createdAt,
+  collaborator: {
+  uid: collaborator.uid,
+  displayName: collaborator.displayName,
+  photoURL: collaborator.photoURL
   }
-});
+  };
+  });
+  
+  res.json(result);
+  } catch (error) {
+  res.status(500).json({ message: 'Error fetching collaborations', error: error.message });
+  }
+  });
 
 /* Middleware to validate Gemini API key
 const validateApiKey = (req, res, next) => {
@@ -468,16 +450,18 @@ io.on('connection', (socket) => {
       if (existingUser.uid !== user.uid) {
         const id = uuidv4();
         const createdAt = new Date().toISOString();
-        
-        await db.run(
-          'INSERT OR REPLACE INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-          [id, existingUser.uid, user.uid, roomId, room.title, createdAt]
-        );
-        
-        await db.run(
-          'INSERT OR REPLACE INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
-          [uuidv4(), user.uid, existingUser.uid, roomId, room.title, createdAt]
-        );
+  
+        await db.run(`
+          INSERT OR REPLACE INTO collaborations 
+          (id, userId, collaboratorId, projectId, projectTitle, createdAt) 
+          VALUES (?, ?, ?, ?, ?, ?)
+        `, [id, existingUser.uid, user.uid, roomId, room.title, createdAt]);
+  
+        await db.run(`
+          INSERT OR REPLACE INTO collaborations 
+          (id, userId, collaboratorId, projectId, projectTitle, createdAt) 
+          VALUES (?, ?, ?, ?, ?, ?)
+        `, [uuidv4(), user.uid, existingUser.uid, roomId, room.title, createdAt]);
       }
     }
 

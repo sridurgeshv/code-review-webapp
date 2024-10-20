@@ -2,25 +2,27 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import './TeamsPage.css';
 
 const TeamsPage = () => {
   const [teamsData, setTeamsData] = useState([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Assuming you have the current user's ID stored somewhere, like in localStorage
-        const userId = localStorage.getItem('userId');
-        const response = await axios.get(`http://localhost:5000/api/get-collaborations/${userId}`);
-        setTeamsData(response.data);
+        if (user && user.uid) {
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/get-collaborations/${user.uid}`);
+          setTeamsData(response.data);
+        }
       } catch (error) {
         console.error("Error fetching teams data", error);
       }
     };
     fetchData();
-  }, []);
+  }, [user]);
 
   return (
     <div className="teams-page">
