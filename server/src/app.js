@@ -52,6 +52,18 @@ let db;
       lastEdited TEXT
     )
   `);
+
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS collaborations (
+      id TEXT PRIMARY KEY,
+      userId TEXT,
+      collaboratorId TEXT,
+      projectId TEXT,
+      projectTitle TEXT,
+      createdAt TEXT
+    )
+  `); 
+
 })();
 
 
@@ -101,29 +113,31 @@ app.post('/api/save-user', async (req, res) => {
 // Add this endpoint to record collaborations
 app.post('/api/record-collaboration', async (req, res) => {
   const { userId, collaboratorId, projectId, projectTitle } = req.body;
+  const id = uuidv4();
+  const createdAt = new Date().toISOString();
+  
   try {
-    const collaboration = new Collaboration({
-      userId,
-      collaboratorId,
-      projectId,
-      projectTitle
-    });
-    await collaboration.save();
+    await db.run(
+      'INSERT OR REPLACE INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
+      [id, userId, collaboratorId, projectId, projectTitle, createdAt]
+    );
     res.status(200).json({ message: 'Collaboration recorded successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error recording collaboration', error });
+    res.status(500).json({ message: 'Error recording collaboration', error: error.message });
   }
 });
 
 // Add this endpoint to get collaborations for a user
 app.get('/api/get-collaborations/:userId', async (req, res) => {
   try {
-    const collaborations = await Collaboration.find({ userId: req.params.userId })
-      .sort('-createdAt')
-      .limit(5);
+    const collaborations = await db.all(
+      'SELECT * FROM collaborations WHERE userId = ? ORDER BY createdAt DESC LIMIT 5',
+      req.params.userId
+    );
+    
     const collaboratorIds = collaborations.map(c => c.collaboratorId);
     const collaborators = await User.find({ uid: { $in: collaboratorIds } });
-    
+
     const result = collaborations.map(c => {
       const collaborator = collaborators.find(user => user.uid === c.collaboratorId);
       return {
@@ -137,10 +151,10 @@ app.get('/api/get-collaborations/:userId', async (req, res) => {
         }
       };
     });
-    
+
     res.json(result);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching collaborations', error });
+    res.status(500).json({ message: 'Error fetching collaborations', error: error.message });
   }
 });
 
@@ -447,23 +461,26 @@ io.on('connection', (socket) => {
       });
     }
   
-     // Record collaboration for each existing user in the room
-     for (const [, existingUser] of room.users) {
+    const room = rooms.get(roomId);
+  
+    // Record collaboration for each existing user in the room
+    for (const [, existingUser] of room.users) {
       if (existingUser.uid !== user.uid) {
-        await Collaboration.findOneAndUpdate(
-          { userId: existingUser.uid, collaboratorId: user.uid, projectId: roomId },
-          { projectTitle: room.title, $setOnInsert: { createdAt: new Date() } },
-          { upsert: true, new: true }
+        const id = uuidv4();
+        const createdAt = new Date().toISOString();
+        
+        await db.run(
+          'INSERT OR REPLACE INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
+          [id, existingUser.uid, user.uid, roomId, room.title, createdAt]
         );
-        await Collaboration.findOneAndUpdate(
-          { userId: user.uid, collaboratorId: existingUser.uid, projectId: roomId },
-          { projectTitle: room.title, $setOnInsert: { createdAt: new Date() } },
-          { upsert: true, new: true }
+        
+        await db.run(
+          'INSERT OR REPLACE INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
+          [uuidv4(), user.uid, existingUser.uid, roomId, room.title, createdAt]
         );
       }
     }
-
-    const room = rooms.get(roomId);
+    
     room.users.set(socket.id, user);
 
     socket.emit('init-room', {

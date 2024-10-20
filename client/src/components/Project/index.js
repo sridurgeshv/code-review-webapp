@@ -39,9 +39,9 @@ function Project() {
   const [isEditing, setIsEditing] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [output, setOutput] = useState('');
-  const [connectedUsers, setConnectedUsers] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(location.state?.selectedTemplate);
   const [socket, setSocket] = useState(null);
+  const [connectedUsers, setConnectedUsers] = useState([]);
 
   useEffect(() => {
     if (!user) return;
@@ -83,14 +83,14 @@ function Project() {
       if (roomTitle) setTitle(roomTitle);
     });
 
-    newSocket.on('title-update', ({ title: newTitle }) => {
-      setTitle(newTitle);
-    });
-  
     newSocket.on('room-users', ({ users }) => {
       setConnectedUsers(users.filter((u, index, self) =>
         index === self.findIndex((t) => t.uid === u.uid)
       ));
+    });
+
+    newSocket.on('title-update', ({ title: newTitle }) => {
+      setTitle(newTitle);
     });
   
     return () => {
@@ -246,8 +246,8 @@ function Project() {
             <h3 className="connected-title">Connected</h3>
             <div className="connected-users">
             {connectedUsers
-            .filter(user => user.displayName && user.photoURL)
-            .map(user => (
+              .filter(user => user.displayName && user.photoURL)
+              .map(user => (
               <img
                 key={user.uid}
                 src={user.photoURL}

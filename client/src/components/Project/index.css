@@ -166,8 +166,8 @@
 }
 
 .user-connected-avatar {
-  width: 45px;
-  height: 45px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
   margin-bottom: 15px;
   object-fit: cover;
