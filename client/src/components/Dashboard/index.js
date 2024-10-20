@@ -32,7 +32,6 @@ function Dashboard() {
 
     socket.on('user-update', (updatedUser) => {
       if (updatedUser.uid === user.uid) {
-        // Update the AuthContext
         setUser(prevUser => ({
           ...prevUser,
           displayName: updatedUser.displayName,
@@ -171,9 +170,9 @@ function Dashboard() {
         <div className="teams-header">
           <h2>Teams</h2>
         </div>
-          <div className="divider"></div>
+          <div className="divider2"></div>
           <div className="team-list">
-          {collaborations.slice(0, 4).map((collab, index) => (
+            {collaborations.slice(0, 4).map((collab) => (
               <div key={collab.id} className="team-item">
                 <img src={collab.collaborator.photoURL || "https://via.placeholder.com/50"} alt={collab.collaborator.displayName} />
                 <span>{collab.collaborator.displayName}</span>

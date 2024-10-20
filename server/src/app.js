@@ -131,7 +131,7 @@ app.post('/api/record-collaboration', async (req, res) => {
 app.get('/api/get-collaborations/:userId', async (req, res) => {
   try {
     const collaborations = await db.all(
-      'SELECT * FROM collaborations WHERE userId = ? ORDER BY createdAt DESC LIMIT 5',
+      'SELECT DISTINCT collaboratorId, projectId, projectTitle, MAX(createdAt) as createdAt FROM collaborations WHERE userId = ? GROUP BY collaboratorId ORDER BY createdAt DESC LIMIT 5',
       req.params.userId
     );
     
@@ -141,7 +141,7 @@ app.get('/api/get-collaborations/:userId', async (req, res) => {
     const result = collaborations.map(c => {
       const collaborator = collaborators.find(user => user.uid === c.collaboratorId);
       return {
-        id: c.id,
+        id: c.projectId,
         projectTitle: c.projectTitle,
         createdAt: c.createdAt,
         collaborator: {
@@ -480,7 +480,7 @@ io.on('connection', (socket) => {
         );
       }
     }
-    
+
     room.users.set(socket.id, user);
 
     socket.emit('init-room', {
