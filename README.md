@@ -45,19 +45,40 @@ To set up the project locally, follow these steps:
 
 2. Navigate to the project directory:
 ```bash
-   cd code-review-webapp
+   cd codereview-tool
 ```
-3. Install the dependencies :
+
+3. Navigate to Client dir by navigating to it.
+```bash
+cd client
+```
+
+- Install the dependencies :
+```bash
+   npm install
+```
+
+4. Navigate to Server dir by navigating to it.
+```bash
+cd server
+```
+
+- Install the dependencies :
 ```bash
    npm install
 ```
 
 ## Usage
 
-To start the application, run:
+To start the application, run the following in client dir:
 
 ```bash
 npm start
+```
+
+To start the application, run the following in server dir :
+```bash
+npm run start
 ```
 
 Open your browser and navigate to `http://localhost:3000` to access the tool.

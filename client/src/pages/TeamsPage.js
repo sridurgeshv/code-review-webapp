@@ -11,7 +11,9 @@ const TeamsPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/record-collaboration');
+        // Assuming you have the current user's ID stored somewhere, like in localStorage
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get(`http://localhost:5000/api/get-collaborations/${userId}`);
         setTeamsData(response.data);
       } catch (error) {
         console.error("Error fetching teams data", error);
@@ -43,9 +45,9 @@ const TeamsPage = () => {
             <tbody>
               {teamsData.map((team, index) => (
                 <tr key={index}>
-                  <td>{team.users.join(', ')}</td>
-                  <td>{team.project}</td>
-                  <td>{new Date(team.created_at).toLocaleDateString()}</td>
+                  <td>{team.collaborator.displayName}</td>
+                  <td>{team.projectTitle}</td>
+                  <td>{new Date(team.createdAt).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

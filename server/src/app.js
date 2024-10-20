@@ -118,7 +118,7 @@ app.post('/api/record-collaboration', async (req, res) => {
   
   try {
     await db.run(
-      'INSERT OR REPLACE INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
+      'INSERT INTO collaborations (id, userId, collaboratorId, projectId, projectTitle, createdAt) VALUES (?, ?, ?, ?, ?, ?)',
       [id, userId, collaboratorId, projectId, projectTitle, createdAt]
     );
     res.status(200).json({ message: 'Collaboration recorded successfully' });
