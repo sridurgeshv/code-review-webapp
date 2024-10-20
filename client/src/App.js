@@ -8,6 +8,7 @@ import Project from './components/Project';
 import Settings from './pages/Settings';
 import { useAuth } from './contexts/AuthContext';
 import ProjectList from './pages/ProjectPage';
+import TeamsPage from './pages/TeamsPage';
 
 function PrivateRoute({ children }) {
   const { user } = useAuth();
@@ -23,6 +24,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/projects" element={<ProjectList />} />
+          <Route path="/teams" element={<TeamsPage />} />
           <Route
             path="/dashboard"
             element={             

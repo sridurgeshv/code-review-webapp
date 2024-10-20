@@ -121,8 +121,8 @@ const Editor = forwardRef(({ user, selectedTemplate = 'javascript', onCodeChange
     <div className="h-screen">
       <div className="editor-toolbar">
         <button onClick={handleSave} className="save-button">
-          <Save size={16} className="icon" />
-          <span className="save-text">Save</span>
+          <Save size={16} className="save-icon" />
+          <span className="save-text">Update & Sync</span>
       </button>
       </div>
       <MonacoEditor

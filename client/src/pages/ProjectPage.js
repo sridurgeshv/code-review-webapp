@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Clock, Code, Folder } from 'lucide-react';
-import './ProjectPage.css'; // Import the CSS file
+import { Clock, Code, Folder, ArrowLeft } from 'lucide-react';
+import './ProjectPage.css';
 
 const ProjectCard = ({ project, onClick }) => {
   return (
@@ -61,23 +61,17 @@ const ProjectList = () => {
     fetchProjects();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="loading-spinner"></div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="error-message">
-        Error: {error}
-      </div>
-    );
-  }
+  if (loading) return <div className="loading-spinner"></div>;
+  if (error) return <div className="error-message">Error: {error}</div>;
 
   return (
     <div className="project-list-container">
-      <h1 className="project-list-title">My Projects</h1>
+      <div className="project-list-header">
+        <button className="back-button" onClick={() => navigate('/dashboard')}>
+          <ArrowLeft className="back-icon" />
+        </button>
+        <h1 className="project-list-title">My Projects</h1>
+      </div>
       <div className="project-grid">
         {projects.map((project) => (
           <ProjectCard
