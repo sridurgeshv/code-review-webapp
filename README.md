@@ -14,7 +14,7 @@
 
 Real-Time Code Review and Collaboration is a tool designed to enhance team productivity by enabling simultaneous code review, suggestions, and bug detection through real-time collaboration.
 
-This application benefits developers, team leads, and project managers by streamlining the code review process, reducing feedback loops, and fostering a collaborative environment. Stakeholders can expect improved code quality, faster development cycles, and enhanced team communication.
+Our application brings an enhanced coding experience designed for developers who need powerful tools without sacrificing simplicity. Unlike some tools in current tech, where users can write and run code but lack real-time syncing between different users, our app connects users seamlessly in real-time coding sessions, bridging the gap for true collaboration.
 
 ## Architecture
 
@@ -29,6 +29,10 @@ The architecture of the application is organized into several folders, each serv
 - AI-powered code suggestions and bug detection 
 - Frontend built with React and Monaco Editor 
 - Backend powered by Node.js with WebSocket connections 
+
+## Why Choose Our App?
+
+If you've used Replit or other similar tools, you've experienced their powerful features. However, one common limitation is the lack of structured team-based collaboration without syncing issues. With our app, users can effortlessly connect to a room, code in real time, and enjoy AI-powered assistance — all while working with their team in a more organized, isolated environment.
 
 ## Installation
 
@@ -88,43 +92,3 @@ This project is licensed under the MIT License. See the LICENSE file for details
 ## Contact
 
 For questions or feedback, please reach out to us [sridurgeshv@gmail.com,ritikasrivastava456@gmail.com].
-
-
-
-Careful
-
-real-time-code-review/
-├── client/
-│   ├── public/
-│   │   └── index.html
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Editor/
-│   │   │   ├── Auth/
-│   │   │   └── Dashboard/
-│   │   ├── contexts/
-│   │   │   └── AuthContext.js
-│   │   ├── services/
-│   │   │   ├── api.js
-│   │   │   └── socket.js
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── package.json
-│   └── .env
-└── server/
-    ├── src/
-    │   ├── controllers/
-    │   ├── models/
-    │   ├── routes/
-    │   ├── services/
-    │   └── app.js
-    ├── package.json
-    └── .env
-
-
-
-### google auth :
-```bash
-cd client
-npm install @react-oauth/google firebase
-```
