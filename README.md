@@ -2,90 +2,99 @@
 
 ## Table of Contents
 
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Installation](#installation)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
+- [Demo](#demo)
 
-## Project Overview
+## Overview
 
 Real-Time Code Review and Collaboration is a tool designed to enhance team productivity by enabling simultaneous code review, suggestions, and bug detection through real-time collaboration.
 
-Our application brings an enhanced coding experience designed for developers who need powerful tools without sacrificing simplicity. Unlike some tools in current tech, where users can write and run code but lack real-time syncing between different users, our app connects users seamlessly in real-time coding sessions, bridging the gap for true collaboration.
+Unlike conventional tools where users can write and run code but lack real-time synchronization between different users, our app facilitates seamless connections in real-time coding sessions, bridging the gap for true collaboration. This makes it an ideal choice for teams seeking structured, team-based collaboration without syncing issues.
+
+## Key Features
+
+- **User Profiles and Team Creation**: Customize your experience and organize your team efficiently.
+- **Real-time Coding and Commenting**: Utilize WebRTC for seamless, instantaneous collaboration.
+- **AI-powered Assistance**: Benefit from intelligent code suggestions and proactive bug detection.
+- **Modern Frontend**: Built with React and Monaco Editor for a responsive and intuitive user interface.
+- **Robust Backend**: Powered by Node.js with WebSocket connections for real-time data transfer.
+- **Isolated Environments**: Work in organized, team-specific spaces for enhanced focus and productivity.
 
 ## Architecture
 
-The architecture of the application is organized into several folders, each serving a specific purpose in the overall system design. Please refer to the architecture documentation for detailed information.
+The application's architecture is meticulously organized into several directories, each serving a specific purpose in the overall system design. For a detailed understanding of the system structure, please refer to the architecture diagram below:
 
-![Alt Text](https://github.com/sridurgeshv/code-review-webapp/blob/main/arch.JPG)
+![Architecture Diagram](https://github.com/sridurgeshv/code-review-webapp/blob/main/arch.JPG)
 
-## Features
-
-- User profiles and team creation  
-- Real-time coding and commenting using WebRTC 
-- AI-powered code suggestions and bug detection 
-- Frontend built with React and Monaco Editor 
-- Backend powered by Node.js with WebSocket connections 
 
 ## Why Choose Our App?
 
 If you've used Replit or other similar tools, you've experienced their powerful features. However, one common limitation is the lack of structured team-based collaboration without syncing issues. With our app, users can effortlessly connect to a room, code in real time, and enjoy AI-powered assistance — all while working with their team in a more organized, isolated environment.
 
-## Installation
+## Getting Started
 
-To set up the project locally, follow these steps:
+### Prerequisites
 
-1. Clone the repository:
+Ensure you have the following installed on your system:
+- Node.js (version 12.0 or higher)
+- npm (version 6.0 or higher)
+
+### Installation
+
+Follow these steps to set up the project locally:
+
+- Clone the repository:
 ```bash
    git clone https://github.com/sridurgeshv/code-review-webapp
-```
-
-2. Navigate to the project directory:
-```bash
    cd codereview-tool
 ```
 
-3. Navigate to Client dir by navigating to it.
+### Frontend Setup
+
+- Set up the frontend:
 ```bash
 cd client
+npm install
 ```
 
-- Install the dependencies :
-```bash
-   npm install
-```
+### Backend Setup
 
-4. Navigate to Server dir by navigating to it.
+- Set up the backend:
 ```bash
 cd server
-```
-
-- Install the dependencies :
-```bash
-   npm install
+npm install
 ```
 
 ## Usage
 
-To start the application, run the following in client dir:
+To launch the application:
 
+1. Start the frontend :
 ```bash
+cd client
 npm start
 ```
 
-To start the application, run the following in server dir :
+2. In a new terminal window, start the backend :
 ```bash
+cd server
 npm run start
 ```
 
-Open your browser and navigate to `http://localhost:3000` to access the tool.
+3. Open your web browser and navigate to http://localhost:3000 to access the application.
 
 ## Contributing
 
-We welcome contributions! Please follow these steps:
+We welcome contributions from the community. To contribute:
 
 1. Fork the repository.
 
@@ -104,7 +113,9 @@ git commit -m "Add your message here"
 git push origin feature/YourFeatureName
 ```
 
-5. Create a pull request.
+5. Create a pull request with a detailed description of your changes
+
+Please ensure your code adheres to our coding standards and includes appropriate tests.
 
 ## License
 
@@ -112,4 +123,10 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 ## Contact
 
-For questions or feedback, please reach out to us [sridurgeshv@gmail.com,ritikasrivastava456@gmail.com].
+For questions, feedback, or support, please contact us:
+
+- Email: sridurgeshv@gmail.com, ritikasrivastava456@gmail.com
+- Project Repository: https://github.com/sridurgeshv/code-review-webapp
+
+## Video Demo
+For a comprehensive overview of the application's features and functionality, please watch our [video demonstration](https://youtu.be/yPwKMofsTlY). This walkthrough provides detailed guidance on effectively using and navigating CodeRev.
