@@ -47,7 +47,7 @@ If you've used Replit or other similar tools, you've experienced their powerful 
 Ensure you have the following installed on your system:
 - Node.js (version 12.0 or higher)
 - npm (version 6.0 or higher)
-- An API Key from [Groq]()
+- An API Key from [Groq](https://groq.com/)
 
 ### Installation
 
@@ -56,7 +56,7 @@ Follow these steps to set up the project locally:
 - Clone the repository:
 ```bash
    git clone https://github.com/sridurgeshv/code-review-webapp
-   cd codereview-tool
+   cd code-review-webapp
 ```
 
 ### Frontend Setup
