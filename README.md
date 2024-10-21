@@ -20,6 +20,8 @@ Real-Time Code Review and Collaboration is a tool designed to enhance team produ
 
 Unlike conventional tools where users can write and run code but lack real-time synchronization between different users, our app facilitates seamless connections in real-time coding sessions, bridging the gap for true collaboration. This makes it an ideal choice for teams seeking structured, team-based collaboration without syncing issues.
 
+Note - To run the code you should have required language installed in your pc like if you are running python code you should have python installed in your pc.
+
 ## Key Features
 
 - **User Profiles and Team Creation**: Customize your experience and organize your team efficiently.
