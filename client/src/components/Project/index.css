@@ -94,13 +94,13 @@
   background-color: #1e1e2e;
   color: white;
   overflow: hidden;
-  height: calc(100vh - 68px);  /* Explicit height calculation */
+  height: calc(100vh - 68px);  
 }
 
 .sidebar2 {
   width: 330px;
   min-width: 330px;
-  height: 100%;  /* Full height of parent */
+  height: 100%;  
   background-color: #13111b;
   display: flex;
   flex-direction: column;

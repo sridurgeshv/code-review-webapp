@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName,
-          photoURL: user.photoURL, // Ensure photoURL is included
+          photoURL: user.photoURL,
         };
         // Send user data to the backend
         await axios.post('http://localhost:5000/api/save-user', userData);
