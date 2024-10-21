@@ -19,6 +19,7 @@ const { open } = require('sqlite');
 const app = express();
 const server = http.createServer(app);
 
+// Configure Socket.IO with CORS settings
 const io = new Server(server, {
   cors: {
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
@@ -26,7 +27,7 @@ const io = new Server(server, {
   }
   });
 
-// Configure CORS with specific options
+// Enable CORS for the Express app
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   methods: ['GET', 'POST'],
@@ -35,7 +36,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// SQLite setup
+// Set up SQLite database
 let db;
 (async () => {
   db = await open({
@@ -43,6 +44,7 @@ let db;
     driver: sqlite3.Database
   });
   
+  // Create projects table if it doesn't exist
   await db.exec(`
     CREATE TABLE IF NOT EXISTS projects (
       id TEXT PRIMARY KEY,
@@ -53,6 +55,7 @@ let db;
     )
   `);
 
+  // Create collaborations table if it doesn't exist
   await db.exec(`
     CREATE TABLE IF NOT EXISTS collaborations (
       id TEXT PRIMARY KEY,
@@ -67,7 +70,7 @@ let db;
 })();
 
 
-// MongoDB connection
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
@@ -82,7 +85,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Add this schema after the existing User schema
+// Define Collaboration schema and model
 const collaborationSchema = new mongoose.Schema({
   id: { type: String, default: uuidv4 },
   userId: String,
@@ -94,7 +97,7 @@ const collaborationSchema = new mongoose.Schema({
 
 const Collaboration = mongoose.model('Collaboration', collaborationSchema);
 
-// Route to save user data
+// Endpoint to save user data
 app.post('/api/save-user', async (req, res) => {
   const { uid, email, displayName, photoURL } = req.body;
 
@@ -110,6 +113,7 @@ app.post('/api/save-user', async (req, res) => {
   }
 });
 
+// Endpoint to get collaborations for a user
 app.get('/api/get-collaborations/:userId', async (req, res) => {
   try {
   const collaborations = await db.all(
@@ -165,12 +169,12 @@ const validateApiKey = (req, res, next) => {
 // Store room state
 const rooms = new Map();
 
-// Basic route
+// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Code execution endpoint
+// Endpoint to execute code
 app.post('/api/execute', async (req, res) => {
   const { code, language } = req.body;
   const tempDir = path.join(__dirname, 'temp');
@@ -220,6 +224,7 @@ app.post('/api/execute', async (req, res) => {
   }
 });
 
+// Function to get chat completion from Groq API
 const getGroqChatCompletion = async (userMessageContent) => {
   return groq.chat.completions.create({
     messages: [
@@ -320,7 +325,7 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   }
 }); */
 
-// Modify the marked options
+// Configure marked options for Markdown parsing
 marked.setOptions({
   renderer: new marked.Renderer(),
   highlight: function(code, language) {
@@ -334,10 +339,12 @@ marked.setOptions({
   xhtml: false
 });
 
+// Function to format AI response
 function formatAIResponse(htmlContent) {
   return htmlContent; // Remove the wrapping div
 }
 
+// Endpoint for AI chat
 app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   try {
     const { message } = req.body;
@@ -366,6 +373,7 @@ app.post('/api/ai/chat', validateApiKey, async (req, res) => {
   }
 });
 
+// Endpoint to update user information
 app.post('/api/update-user', async (req, res) => {
   const { uid, displayName, photoURL } = req.body;
 
@@ -403,7 +411,7 @@ app.post('/api/save-project', async (req, res) => {
   }
 });
 
-// Get project endpoint
+// Endpoint to get a specific project
 app.get('/api/get-project/:id', async (req, res) => {
   try {
     const project = await db.get('SELECT * FROM projects WHERE id = ?', req.params.id);
@@ -417,7 +425,7 @@ app.get('/api/get-project/:id', async (req, res) => {
   }
 });
 
-// Get all projects endpoint
+// Endpoint to get all projects
 app.get('/api/get-all-projects', async (req, res) => {
   try {
     const projects = await db.all('SELECT id, title, template, lastEdited FROM projects');
@@ -427,7 +435,7 @@ app.get('/api/get-all-projects', async (req, res) => {
   }
 });
 
-// Socket.IO connection
+// Socket.IO connection handler
 io.on('connection', (socket) => {
   socket.on('join-room', async ({ roomId, user, template, projectTitle }) => {
     socket.join(roomId);
@@ -480,6 +488,7 @@ io.on('connection', (socket) => {
     });
   });
 
+    // Handle title updates
   socket.on('update-title', ({ roomId, title }) => {
     const room = rooms.get(roomId);
     if (room) {

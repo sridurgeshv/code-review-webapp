@@ -16,7 +16,7 @@
 
 ## Overview
 
-Real-Time Code Review and Collaboration is a tool designed to enhance team productivity by enabling simultaneous code review, suggestions, and bug detection through real-time collaboration.
+Real-Time Code Review and Collaboration is a tool designed to enhance team productivity by enabling simultaneous code review, suggestions through real-time collaboration.
 
 Unlike conventional tools where users can write and run code but lack real-time synchronization between different users, our app facilitates seamless connections in real-time coding sessions, bridging the gap for true collaboration. This makes it an ideal choice for teams seeking structured, team-based collaboration without syncing issues.
 
@@ -47,6 +47,7 @@ If you've used Replit or other similar tools, you've experienced their powerful 
 Ensure you have the following installed on your system:
 - Node.js (version 12.0 or higher)
 - npm (version 6.0 or higher)
+- An API Key from [Groq]()
 
 ### Installation
 
@@ -73,6 +74,11 @@ npm install
 cd server
 npm install
 ```
+
+### API Key Setup
+
+- Visit the [Groq](https://groq.com/) and click on "FREE API KEY".
+- Sign in and get your API Key and paste it in the .env file in server directory.
 
 ## Usage
 
