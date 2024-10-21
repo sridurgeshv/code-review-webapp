@@ -22,7 +22,7 @@ Unlike conventional tools where users can write and run code but lack real-time 
 
 # Note 
 
-To run the code you should have required Programming language installed in your pc like if you are running python code you should have python installed in your pc.
+To run the code you should have required Programming language installed in your pc like if you are running python code you should have python installed in your pc and same for other languages.
 
 ## Key Features
 
